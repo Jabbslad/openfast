@@ -85,14 +85,14 @@ export function SettingsScreen() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-indigo-950 flex items-center justify-center">
-        <p className="text-white text-lg">Loading...</p>
+      <div className="flex-1 bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] flex items-center justify-center">
+        <p className="text-gray-500">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-indigo-950 p-4">
+    <div className="flex-1 bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] overflow-y-auto p-4">
       <h1 className="text-white text-2xl font-bold mb-6">Settings</h1>
 
       {/* Fasting Section */}

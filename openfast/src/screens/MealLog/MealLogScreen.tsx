@@ -79,96 +79,48 @@ export function MealLogScreen() {
   const dateLabel = getDateLabel(selectedDate);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white p-4">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">{dateLabel}</h1>
-        <button
-          onClick={handleLogMeal}
-          className="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
-        >
+    <div className="flex-1 bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] px-4 py-6 overflow-y-auto">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-lg font-semibold">{dateLabel}</h1>
+        <button onClick={handleLogMeal}
+          className="bg-indigo-500 text-white px-5 py-2 rounded-full text-sm font-semibold min-h-[44px]">
           + Log Meal
         </button>
       </div>
 
-      {/* Date Navigation */}
-      <div className="flex items-center justify-center gap-4 mb-6">
-        <button
-          onClick={goYesterday}
-          className="text-gray-300 hover:text-white transition-colors px-2 py-1"
-          aria-label="Yesterday"
-        >
-          ← Yesterday
-        </button>
-        <button
-          onClick={goToday}
-          className="text-green-400 hover:text-green-300 font-semibold transition-colors px-2 py-1"
-          aria-label="Go to Today"
-        >
-          ·
-        </button>
-        <button
-          onClick={goTomorrow}
-          className="text-gray-300 hover:text-white transition-colors px-2 py-1"
-          aria-label="Tomorrow"
-        >
-          Tomorrow →
-        </button>
-      </div>
-
-      {/* Meal List */}
-      <div className="space-y-3">
-        {meals.length === 0 ? (
-          <p className="text-gray-400 text-center py-8">No meals logged for this day.</p>
-        ) : (
-          meals.map((meal) => (
-            <div
-              key={meal.id}
-              className="bg-gray-700 rounded-lg p-4 flex items-center justify-between"
-            >
-              <div>
-                <p className="font-medium">{meal.description}</p>
-                <p className="text-sm text-gray-400">{formatTime(meal.timestamp)}</p>
-              </div>
-              <button
-                onClick={() => handleDelete(meal.id!)}
-                aria-label="delete"
-                className="text-gray-400 hover:text-red-400 transition-colors text-lg ml-4"
-              >
-                ✕
-              </button>
-            </div>
-          ))
+      <div className="flex flex-col gap-2">
+        {meals.length === 0 && (
+          <div className="text-gray-500 text-sm text-center py-8">No meals logged</div>
         )}
+        {meals.map((meal) => (
+          <div key={meal.id} className="bg-white/5 rounded-xl p-4 flex justify-between items-center">
+            <div>
+              <span className="font-medium">{meal.description}</span>
+              <span className="text-gray-500 text-sm ml-3">{formatTime(meal.timestamp)}</span>
+            </div>
+            <button onClick={() => handleDelete(meal.id!)} aria-label="delete"
+              className="text-red-400 text-sm min-w-[44px] min-h-[44px] flex items-center justify-center">✕</button>
+          </div>
+        ))}
       </div>
 
-      {/* Modal */}
+      <div className="flex justify-center gap-6 mt-6 text-sm">
+        <button onClick={goYesterday} className="text-gray-500 min-h-[44px]">← Yesterday</button>
+        <button onClick={goToday} className="text-indigo-400 min-h-[44px]">Today</button>
+        <button onClick={goTomorrow} className="text-gray-500 min-h-[44px]">Tomorrow →</button>
+      </div>
+
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-          <div className="bg-gray-800 rounded-xl p-6 w-full max-w-sm mx-4 shadow-xl">
-            <h2 className="text-xl font-bold mb-4">Log Meal</h2>
-            <input
-              type="text"
-              placeholder="What did you eat?"
-              value={newMealText}
-              onChange={(e) => setNewMealText(e.target.value)}
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-4">
+          <div className="bg-[#1a1a2e] rounded-xl p-6 w-full max-w-sm mb-4">
+            <h3 className="text-lg font-semibold mb-4">Log a Meal</h3>
+            <input type="text" value={newMealText} onChange={(e) => setNewMealText(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSave()}
-              className="w-full bg-gray-700 text-white rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-gray-400"
-              autoFocus
-            />
-            <div className="flex gap-3 justify-end">
-              <button
-                onClick={handleCancel}
-                className="px-4 py-2 rounded-lg text-gray-300 hover:text-white transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSave}
-                className="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
-              >
-                Save
-              </button>
+              placeholder="What did you eat?"
+              className="w-full bg-[#0f0f1a] border border-[#2a2a4a] rounded-lg px-4 py-3 text-white placeholder-gray-600 mb-4" autoFocus />
+            <div className="flex gap-3">
+              <button onClick={handleCancel} className="flex-1 py-2.5 rounded-xl bg-[#2a2a4a] text-sm font-medium min-h-[44px]">Cancel</button>
+              <button onClick={handleSave} className="flex-1 py-2.5 rounded-xl bg-indigo-500 text-sm font-medium min-h-[44px]">Save</button>
             </div>
           </div>
         </div>

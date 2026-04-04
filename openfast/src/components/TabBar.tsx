@@ -1,29 +1,23 @@
 import { NavLink } from "react-router-dom";
 
 const tabs = [
-  { label: "Timer", path: "/", icon: "⏱️" },
-  { label: "Log", path: "/log", icon: "📋" },
-  { label: "Water", path: "/hydration", icon: "💧" },
-  { label: "Progress", path: "/progress", icon: "📈" },
-  { label: "Settings", path: "/settings", icon: "⚙️" },
+  { to: "/", label: "Timer", icon: "⏱" },
+  { to: "/log", label: "Log", icon: "📋" },
+  { to: "/hydration", label: "Water", icon: "💧" },
+  { to: "/progress", label: "Progress", icon: "📊" },
+  { to: "/settings", label: "Settings", icon: "⚙️" },
 ];
 
 export function TabBar() {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-[#0f0f1a] border-t border-[#2a2a4a] flex">
-      {tabs.map(({ label, path, icon }) => (
-        <NavLink
-          key={path}
-          to={path}
-          end={path === "/"}
+    <nav className="flex justify-around border-t border-[#2a2a4a] bg-[#0a0a14] py-2 shrink-0">
+      {tabs.map((tab) => (
+        <NavLink key={tab.to} to={tab.to} end={tab.to === "/"}
           className={({ isActive }) =>
-            `flex flex-col items-center justify-center flex-1 min-h-[44px] text-xs gap-0.5 ${
-              isActive ? "text-indigo-400" : "text-gray-500"
-            }`
-          }
-        >
-          <span className="text-lg leading-none">{icon}</span>
-          <span>{label}</span>
+            `flex flex-col items-center min-w-[44px] min-h-[44px] justify-center text-xs ${isActive ? "text-indigo-400" : "text-gray-500"}`
+          }>
+          <span className="text-xl leading-none">{tab.icon}</span>
+          <span className="mt-0.5">{tab.label}</span>
         </NavLink>
       ))}
     </nav>

@@ -84,8 +84,8 @@ export function TimerScreen() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-indigo-950 flex items-center justify-center">
-        <p className="text-white text-lg">Loading...</p>
+      <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e]">
+        <div className="text-gray-500">Loading...</div>
       </div>
     );
   }
@@ -94,57 +94,41 @@ export function TimerScreen() {
   const protocol = getProtocol(protocolId);
   const targetMs = getTargetDurationMs(protocolId);
   const isActive = !!activeFast;
-  const goalReached = isActive && targetMs > 0 && elapsedMs >= targetMs;
   const percentage = targetMs > 0 ? Math.min(Math.round((elapsedMs / targetMs) * 100), 100) : 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-indigo-950 flex flex-col items-center justify-center gap-8 p-6">
-      {/* Protocol badge */}
-      <div className="px-4 py-1.5 rounded-full bg-indigo-800 text-indigo-200 text-sm font-medium">
-        {protocol?.name ?? protocolId} Protocol
+    <div className="flex-1 flex flex-col items-center justify-center bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] px-6 py-8">
+      {protocol && (
+        <span className="bg-indigo-500/20 text-indigo-400 px-4 py-1 rounded-full text-sm mb-6">
+          {protocol.name} Protocol
+        </span>
+      )}
+
+      <ProgressRing elapsedMs={isActive ? elapsedMs : 0} targetMs={targetMs} />
+
+      {isActive && (
+        <div className="mt-4 text-center">
+          <div className="text-green-400 text-sm font-medium">{percentage}% complete</div>
+          <div className="text-gray-500 text-xs mt-1">Started at {formatTime(activeFast!.startTime)}</div>
+        </div>
+      )}
+
+      <div className="mt-8">
+        {isActive ? (
+          <button onClick={handleEnd}
+            className="bg-red-500 text-white px-10 py-3 rounded-3xl font-semibold text-lg min-h-[44px] active:scale-95 transition-transform">
+            End Fast
+          </button>
+        ) : (
+          <button onClick={handleStart}
+            className="bg-indigo-500 text-white px-10 py-3 rounded-3xl font-semibold text-lg min-h-[44px] active:scale-95 transition-transform">
+            Start Fast
+          </button>
+        )}
       </div>
 
-      {/* Progress ring */}
-      {isActive ? (
-        <div className="flex flex-col items-center gap-2">
-          <ProgressRing elapsedMs={elapsedMs} targetMs={targetMs} />
-          <p className="text-indigo-300 text-sm">{percentage}% complete</p>
-          {activeFast?.startTime && (
-            <p className="text-gray-400 text-xs">
-              Started at {formatTime(activeFast.startTime)}
-            </p>
-          )}
-          {goalReached && (
-            <p className="text-green-400 font-semibold text-lg">Goal Reached!</p>
-          )}
-        </div>
-      ) : (
-        <ProgressRing elapsedMs={0} targetMs={targetMs} />
-      )}
-
-      {/* Action button */}
-      {isActive ? (
-        <button
-          onClick={handleEnd}
-          className="px-8 py-3 rounded-full bg-red-600 hover:bg-red-700 text-white font-semibold text-base transition-colors"
-        >
-          End Fast
-        </button>
-      ) : (
-        <button
-          onClick={handleStart}
-          className="px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-base transition-colors"
-        >
-          Start Fast
-        </button>
-      )}
-
-      {/* Streak count */}
-      <div className="text-center">
-        <p className="text-gray-400 text-sm">
-          Current streak:{" "}
-          <span className="text-indigo-300 font-semibold">{streakCount} day{streakCount !== 1 ? "s" : ""}</span>
-        </p>
+      <div className="mt-6 pt-4 border-t border-[#2a2a4a] w-full max-w-xs text-center">
+        <span className="text-gray-500 text-sm">{streakCount} day streak</span>
       </div>
     </div>
   );

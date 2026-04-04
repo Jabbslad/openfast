@@ -9,7 +9,7 @@ beforeEach(async () => { await db.delete(); await db.open(); });
 describe("MealLogScreen", () => {
   it("shows today header and log meal button", async () => {
     render(<MealLogScreen />);
-    expect(await screen.findByText("Today")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Today" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /log meal/i })).toBeInTheDocument();
   });
   it("shows existing meals for today", async () => {

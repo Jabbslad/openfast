@@ -45,75 +45,40 @@ export function HydrationScreen() {
   const filledDrops = Math.floor(totalMl / 250);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-slate-900 to-gray-950 text-white px-4 py-8">
-      <h1 className="text-2xl font-bold text-center text-cyan-400 mb-6">Hydration</h1>
-
-      {/* Daily goal display */}
+    <div className="flex-1 bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] px-4 py-6 overflow-y-auto">
       <div className="text-center mb-6">
-        <p className="text-sm text-gray-400 mb-1">Daily Goal</p>
-        <p className="text-3xl font-bold text-cyan-400">
-          {/* Total is visually shown but aria-hidden so getByText only sees the goal */}
-          <span aria-hidden="true">{totalMl.toLocaleString("en-US")}</span>
-          {" / "}
-          {goal.toLocaleString("en-US")} ml
-        </p>
-      </div>
-
-      {/* Drop grid */}
-      <div className="flex flex-wrap justify-center gap-2 mb-8 max-w-xs mx-auto">
-        {Array.from({ length: dropCount }, (_, i) => (
-          <span
-            key={i}
-            className="text-2xl select-none"
-            style={{ opacity: i < filledDrops ? 1 : 0.3 }}
-          >
-            💧
-          </span>
-        ))}
-      </div>
-
-      {/* Quick-add buttons — visible text aria-hidden, accessible name via aria-label */}
-      <div className="flex justify-center gap-4 mb-8">
-        {[250, 500].map((amount) => (
-          <button
-            key={amount}
-            onClick={() => addWater(amount)}
-            aria-label={`+ ${amount} ml`}
-            className="px-6 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 active:bg-cyan-700 text-white font-semibold transition-colors"
-          >
-            <span aria-hidden="true">+ {amount} ml</span>
-          </button>
-        ))}
-      </div>
-
-      {/* Entry log */}
-      {entries.length > 0 && (
-        <div className="max-w-sm mx-auto">
-          <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">
-            Today's Log
-          </h2>
-          <ul className="space-y-2">
-            {entries.map((entry) => (
-              <li
-                key={entry.id}
-                className="flex items-center justify-between bg-gray-800 rounded-xl px-4 py-3"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-cyan-400 font-semibold">{entry.amountMl} ml</span>
-                  <span className="text-gray-400 text-sm">{formatTime(entry.timestamp)}</span>
-                </div>
-                <button
-                  onClick={() => deleteEntry(entry.id!)}
-                  className="text-gray-500 hover:text-red-400 transition-colors text-sm"
-                  aria-label="Delete entry"
-                >
-                  <span aria-hidden="true">✕</span>
-                </button>
-              </li>
-            ))}
-          </ul>
+        <div className="text-sm text-gray-500">Daily Goal</div>
+        <div className="text-3xl font-bold text-cyan-400">
+          {totalMl.toLocaleString("en-US")}
+          <span className="text-base text-gray-500"> / {goal.toLocaleString("en-US")} ml</span>
         </div>
-      )}
+      </div>
+
+      <div className="flex justify-center gap-1.5 flex-wrap max-w-[240px] mx-auto mb-6">
+        {Array.from({ length: dropCount }, (_, i) => (
+          <span key={i} className="text-2xl" style={{ opacity: i < filledDrops ? 1 : 0.3 }}>💧</span>
+        ))}
+      </div>
+
+      <div className="flex justify-center gap-3 mb-6">
+        <button onClick={() => addWater(250)} aria-label="+ 250 ml"
+          className="bg-cyan-400/15 border border-cyan-400/30 text-cyan-400 px-5 py-2.5 rounded-full text-sm min-h-[44px]">+ 250 ml</button>
+        <button onClick={() => addWater(500)} aria-label="+ 500 ml"
+          className="bg-cyan-400/15 border border-cyan-400/30 text-cyan-400 px-5 py-2.5 rounded-full text-sm min-h-[44px]">+ 500 ml</button>
+      </div>
+
+      <div className="space-y-0">
+        {entries.map((entry) => (
+          <div key={entry.id} className="flex justify-between items-center py-2 border-b border-[#2a2a4a] text-sm">
+            <span className="text-gray-500">{formatTime(entry.timestamp)}</span>
+            <div className="flex items-center gap-3">
+              <span>{entry.amountMl} ml</span>
+              <button onClick={() => deleteEntry(entry.id!)} aria-label="Delete entry"
+                className="text-red-400 min-w-[44px] min-h-[44px] flex items-center justify-center">✕</button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

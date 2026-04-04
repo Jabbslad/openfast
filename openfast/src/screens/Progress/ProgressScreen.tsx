@@ -23,7 +23,7 @@ function WeeklyCalendar({ sessions }: WeeklyCalendarProps) {
   });
 
   return (
-    <div className="bg-gray-800 rounded-2xl p-4 mb-4">
+    <div className="bg-white/5 rounded-2xl p-4 mb-4">
       <h3 className="text-white text-sm font-semibold mb-3">This Week</h3>
       <div className="flex justify-between">
         {week.map((date, i) => {
@@ -41,9 +41,9 @@ function WeeklyCalendar({ sessions }: WeeklyCalendarProps) {
           } else if (activeSession) {
             circleClass += "bg-indigo-500 text-white";
           } else if (isToday) {
-            circleClass += "bg-gray-600 text-gray-200 ring-2 ring-indigo-400";
+            circleClass += "bg-[#2a2a4a] text-gray-200 ring-2 ring-indigo-400";
           } else {
-            circleClass += "bg-gray-700 text-gray-400";
+            circleClass += "bg-[#2a2a4a] text-gray-400";
           }
 
           return (
@@ -93,28 +93,28 @@ export function ProgressScreen() {
   const earnedBadgeTypes = new Set(earnedBadges.map((b) => b.type));
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-white p-4">
+    <div className="flex-1 bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] text-white p-4 overflow-y-auto">
       <h1 className="text-2xl font-bold mb-6">Progress</h1>
 
       {/* Stats Row */}
       <div className="grid grid-cols-3 gap-3 mb-4">
-        <div className="bg-orange-900/50 border border-orange-700/50 rounded-2xl p-3 flex flex-col items-center">
+        <div className="bg-white/5 rounded-2xl p-3 flex flex-col items-center">
           <span className="text-orange-400 text-2xl font-bold">
             {loading ? "—" : (fastingStreak?.currentCount ?? 0)}
           </span>
-          <span className="text-orange-200 text-xs mt-1 text-center">Fasting Streak</span>
+          <span className="text-gray-400 text-xs mt-1 text-center">Fasting Streak</span>
         </div>
-        <div className="bg-cyan-900/50 border border-cyan-700/50 rounded-2xl p-3 flex flex-col items-center">
+        <div className="bg-white/5 rounded-2xl p-3 flex flex-col items-center">
           <span className="text-cyan-400 text-2xl font-bold">
             {loading ? "—" : (hydrationStreak?.currentCount ?? 0)}
           </span>
-          <span className="text-cyan-200 text-xs mt-1 text-center">Hydration Streak</span>
+          <span className="text-gray-400 text-xs mt-1 text-center">Hydration Streak</span>
         </div>
-        <div className="bg-indigo-900/50 border border-indigo-700/50 rounded-2xl p-3 flex flex-col items-center">
+        <div className="bg-white/5 rounded-2xl p-3 flex flex-col items-center">
           <span className="text-indigo-400 text-2xl font-bold">
             {loading ? "—" : totalFasts}
           </span>
-          <span className="text-indigo-200 text-xs mt-1 text-center">Total Fasts</span>
+          <span className="text-gray-400 text-xs mt-1 text-center">Total Fasts</span>
         </div>
       </div>
 
@@ -132,8 +132,8 @@ export function ProgressScreen() {
                 key={def.type}
                 className={`rounded-2xl p-3 flex flex-col items-center text-center ${
                   earned
-                    ? "bg-gray-800 border border-gray-600"
-                    : "bg-gray-900 border border-dashed border-gray-700 opacity-40"
+                    ? "bg-white/5 border border-[#2a2a4a]"
+                    : "bg-white/5 border border-dashed border-[#2a2a4a] opacity-40"
                 }`}
               >
                 <span className="text-2xl mb-1">{def.icon}</span>
@@ -172,7 +172,7 @@ export function ProgressScreen() {
               return (
                 <div
                   key={session.id ?? i}
-                  className="bg-gray-800 rounded-xl p-3 flex items-center justify-between"
+                  className="bg-white/5 rounded-xl p-3 flex items-center justify-between"
                 >
                   <div>
                     <span className="text-white font-medium text-sm">{session.protocol}</span>
