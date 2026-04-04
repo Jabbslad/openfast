@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { db } from "./database";
 import type { FastingSession, MealLog, HydrationEntry } from "../types";
+import { exportAllData, importAllData, clearAllData } from "./export-import";
 
 beforeEach(async () => {
   await db.delete();
@@ -64,5 +65,38 @@ describe("userProfile", () => {
     const profiles = await db.userProfile.toArray();
     expect(profiles).toHaveLength(1);
     expect(profiles[0].selectedProtocol).toBe("16:8");
+  });
+});
+
+describe("export/import", () => {
+  it("exports all data as a JSON-serializable object", async () => {
+    await db.userProfile.add({ selectedProtocol: "16:8", dailyWaterGoalMl: 2500, createdAt: new Date() });
+    await db.fastingSessions.add({ startTime: new Date(), protocol: "16:8", targetDurationMs: 57_600_000, status: "completed", endTime: new Date() });
+    const exported = await exportAllData();
+    expect(exported.userProfile).toHaveLength(1);
+    expect(exported.fastingSessions).toHaveLength(1);
+    expect(exported.version).toBe(1);
+  });
+
+  it("imports data in replace mode", async () => {
+    await db.userProfile.add({ selectedProtocol: "12:12", dailyWaterGoalMl: 2000, createdAt: new Date() });
+    const importData = {
+      version: 1,
+      userProfile: [{ selectedProtocol: "18:6", dailyWaterGoalMl: 3000, createdAt: new Date().toISOString() }],
+      fastingSessions: [], mealLogs: [], hydrationEntries: [], streaks: [], badges: [],
+    };
+    await importAllData(importData, "replace");
+    const profiles = await db.userProfile.toArray();
+    expect(profiles).toHaveLength(1);
+    expect(profiles[0].selectedProtocol).toBe("18:6");
+  });
+
+  it("clearAllData empties all tables", async () => {
+    await db.userProfile.add({ selectedProtocol: "16:8", dailyWaterGoalMl: 2500, createdAt: new Date() });
+    await db.fastingSessions.add({ startTime: new Date(), protocol: "16:8", targetDurationMs: 57_600_000, status: "active" });
+    await clearAllData();
+    expect(await db.userProfile.count()).toBe(0);
+    expect(await db.fastingSessions.count()).toBe(0);
+    expect(await db.mealLogs.count()).toBe(0);
   });
 });
