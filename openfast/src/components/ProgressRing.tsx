@@ -283,14 +283,7 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor: _zone
                   transform={`rotate(-90 ${center} ${center})`}
                   opacity={0.08}
                 />
-                {/* Subtle bright cap at leading edge */}
-                <circle
-                  cx={headX} cy={headY}
-                  r={strokeWidth / 2 - 2}
-                  fill="white"
-                  opacity={0.18}
-                  filter="url(#head-glow)"
-                />
+                {/* Head cap removed for cleaner look */}
               </>
             );
           })()}
