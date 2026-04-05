@@ -6,6 +6,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "0.4.4",
+    date: "2026-04-05",
+    changes: [
+      "Zone timeline bar now animates from left to right when switching to the Timer screen, filling each stage sequentially to match the current position",
+    ],
+  },
+  {
     version: "0.4.3",
     date: "2026-04-05",
     changes: [
