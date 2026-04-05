@@ -9,7 +9,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     version: "0.3.2",
     date: "2026-04-05",
     changes: [
-      "Fixed tab bar gap on iOS PWA — tab bar now extends flush to the bottom of the screen behind the home indicator",
+      "Fixed tab bar gap on iOS PWA — app now extends flush to the bottom of the screen behind the home indicator",
     ],
   },
   {

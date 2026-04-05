@@ -26,7 +26,7 @@ export default defineConfig({
         short_name: "OpenFast",
         description: "Privacy-first fasting & wellness tracker",
         theme_color: "#0f0f1a",
-        background_color: "#0f0f1a",
+        background_color: "#0a0a14",
         display: "standalone",
         orientation: "portrait",
         icons: [
