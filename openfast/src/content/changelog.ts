@@ -6,6 +6,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "0.2.3",
+    date: "2026-04-05",
+    changes: [
+      "Fixed PWA refresh button on iOS Safari — update prompt now forces a hard reload as fallback when the service worker doesn't trigger one automatically",
+    ],
+  },
+  {
     version: "0.2.2",
     date: "2026-04-05",
     changes: [
