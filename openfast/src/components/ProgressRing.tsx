@@ -213,9 +213,6 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor: _zone
 
           {/* Progress arc — single sweep with zone colours via masked colour wheel */}
           {progress > 0 && (() => {
-            const headAngle = progress * 2 * Math.PI - Math.PI / 2;
-            const headX = center + Math.cos(headAngle) * radius;
-            const headY = center + Math.sin(headAngle) * radius;
             const totalArcLen = circumference * progress;
 
             // Build coloured wedge sectors covering the full ring

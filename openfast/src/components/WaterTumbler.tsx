@@ -3,10 +3,11 @@ import { useEffect, useRef, useState } from "react";
 interface WaterTumblerProps {
   fillPercent: number; // 0-100
   visible?: boolean;   // true when the Water screen is in view
+  goalReached?: boolean;
   size?: number;
 }
 
-export function WaterTumbler({ fillPercent, visible = true, size = 180 }: WaterTumblerProps) {
+export function WaterTumbler({ fillPercent, visible = true, goalReached = false, size = 180 }: WaterTumblerProps) {
   const clampedFill = Math.max(0, Math.min(100, fillPercent));
 
   // Tumbler dimensions (in viewBox coordinates)
@@ -99,6 +100,62 @@ export function WaterTumbler({ fillPercent, visible = true, size = 180 }: WaterT
 
   useEffect(() => {
     return () => cancelAnimationFrame(animRef.current);
+  }, []);
+
+  // Straw drop animation
+  const [strawY, setStrawY] = useState(-80); // start above the glass
+  const [showStraw, setShowStraw] = useState(false);
+  const strawAnimRef = useRef<number>(0);
+  const strawShownRef = useRef(false);
+
+  useEffect(() => {
+    if (goalReached && !strawShownRef.current && visible) {
+      strawShownRef.current = true;
+      setShowStraw(true);
+      setStrawY(-80);
+
+      // Small delay so the water fill animation settles first
+      const timeout = setTimeout(() => {
+        const start = performance.now();
+        const duration = 800;
+        const targetY = 0;
+
+        function tick(now: number) {
+          const t = Math.min((now - start) / duration, 1);
+          // Bounce ease: drops fast, bounces at the bottom
+          let eased: number;
+          if (t < 0.6) {
+            // Drop phase — accelerating
+            eased = (t / 0.6) * (t / 0.6);
+          } else if (t < 0.8) {
+            // First bounce up
+            const bt = (t - 0.6) / 0.2;
+            eased = 1 - bt * 0.15;
+          } else {
+            // Settle
+            const bt = (t - 0.8) / 0.2;
+            eased = 0.85 + bt * 0.15;
+          }
+          setStrawY(-80 + (targetY + 80) * eased);
+          if (t < 1) {
+            strawAnimRef.current = requestAnimationFrame(tick);
+          }
+        }
+
+        strawAnimRef.current = requestAnimationFrame(tick);
+      }, 500);
+
+      return () => clearTimeout(timeout);
+    } else if (!goalReached) {
+      strawShownRef.current = false;
+      setShowStraw(false);
+      setStrawY(-80);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [goalReached, visible]);
+
+  useEffect(() => {
+    return () => cancelAnimationFrame(strawAnimRef.current);
   }, []);
 
   // Computed water geometry
@@ -208,6 +265,41 @@ export function WaterTumbler({ fillPercent, visible = true, size = 180 }: WaterT
         strokeWidth="2"
         strokeLinecap="round"
       />
+
+      {/* Drinking straw — drops in when goal is reached */}
+      {showStraw && (
+        <g transform={`translate(0, ${strawY})`}>
+          <defs>
+            <pattern id="straw-stripes" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(-25)">
+              <rect width="8" height="8" fill="white" />
+              <rect width="4" height="8" fill="#ef4444" />
+            </pattern>
+            <clipPath id="straw-clip">
+              <rect x={cx + 2} y={0} width="8" height={viewH} />
+            </clipPath>
+          </defs>
+          {/* Straw body — diagonal, tilted slightly right */}
+          <line
+            x1={cx + 6}
+            y1={bodyTop - 20}
+            x2={cx + 14}
+            y2={bodyBottom - 20}
+            stroke="url(#straw-stripes)"
+            strokeWidth="5"
+            strokeLinecap="round"
+          />
+          {/* Bent top portion */}
+          <line
+            x1={cx + 4}
+            y1={bodyTop - 32}
+            x2={cx + 6}
+            y2={bodyTop - 20}
+            stroke="url(#straw-stripes)"
+            strokeWidth="5"
+            strokeLinecap="round"
+          />
+        </g>
+      )}
     </svg>
   );
 }

@@ -66,7 +66,7 @@ export function HydrationScreen() {
     <div ref={containerRef} className="flex-1 bg-transparent px-4 py-6 overflow-y-auto">
       {/* Water tumbler */}
       <div className="mb-4">
-        <WaterTumbler fillPercent={percentage} size={160} visible={screenVisible} />
+        <WaterTumbler fillPercent={percentage} size={160} visible={screenVisible} goalReached={goalReached} />
       </div>
 
       {/* Goal display */}
