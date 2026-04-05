@@ -13,6 +13,7 @@ export const CHANGELOG: ChangelogEntry[] = [
       "App badge shows elapsed fasting hours on the home screen icon (iOS 16.4+)",
       "Share your fasting results and streaks via the native Share sheet",
       "Install prompt guides non-installed users to add OpenFast to their home screen",
+      "Landscape overlay prompts users to rotate back to portrait on mobile devices",
     ],
   },
   {
