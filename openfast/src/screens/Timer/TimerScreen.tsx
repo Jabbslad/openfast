@@ -9,8 +9,6 @@ import { formatTime, formatDuration } from "../../utils/time";
 import { getZoneForElapsedMs } from "../../utils/zones";
 import { ZONE_NOTIFICATIONS } from "../../content/zone-notifications";
 import { setBadge, clearBadge } from "../../utils/badge";
-import { setThemeColor, resetThemeColor } from "../../utils/theme-color";
-import { lockPortrait } from "../../utils/orientation";
 import { shareFastResult } from "../../utils/share";
 import { ZoneTimeline } from "../../components/ZoneTimeline";
 import { ZoneExplorer } from "../../components/ZoneExplorer";
@@ -101,24 +99,6 @@ export function TimerScreen() {
       clearBadge();
     }
   }, [badgeHours]);
-
-  // Update theme-color to match current zone
-  const currentZoneId = activeFast && elapsedMs > 0 ? getZoneForElapsedMs(elapsedMs).id : null;
-  useEffect(() => {
-    if (currentZoneId) {
-      const z = getZoneForElapsedMs(elapsedMs);
-      setThemeColor(z.color);
-    } else {
-      resetThemeColor();
-    }
-    return () => resetThemeColor();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentZoneId]);
-
-  // Lock orientation to portrait on mount
-  useEffect(() => {
-    lockPortrait();
-  }, []);
 
   async function handleStart() {
     if (!profile) return;

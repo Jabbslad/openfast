@@ -18,11 +18,9 @@ export const CHANGELOG: ChangelogEntry[] = [
     changes: [
       "iOS PWA enhancements — Apple meta tags for native-feel status bar and home screen icon",
       "App badge shows elapsed fasting hours on the home screen icon (iOS 16.4+)",
-      "Dynamic theme-color changes to match your current fasting zone",
       "Share your fasting results and streaks via the native Share sheet",
-      "Manifest shortcuts — long-press the app icon for quick access to Start Fast and Progress",
-      "Orientation lock keeps the app in portrait mode",
       "Install prompt guides non-installed users to add OpenFast to their home screen",
+      "Landscape overlay prompts users to rotate back to portrait on mobile devices",
     ],
   },
   {
