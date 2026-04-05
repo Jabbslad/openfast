@@ -6,6 +6,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "0.2.2",
+    date: "2026-04-05",
+    changes: [
+      "Progress ring indicator now has a glassy, translucent appearance with subtle specular highlights",
+    ],
+  },
+  {
     version: "0.2.1",
     date: "2026-04-05",
     changes: [

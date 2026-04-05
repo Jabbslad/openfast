@@ -74,6 +74,14 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor, zoneG
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
+          <filter id="glassy" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="softBlur" />
+            <feSpecularLighting in="softBlur" surfaceScale="3" specularConstant="0.6" specularExponent="20" result="specular">
+              <fePointLight x={center + padding} y={padding} z="80" />
+            </feSpecularLighting>
+            <feComposite in="specular" in2="SourceGraphic" operator="in" result="specMask" />
+            <feBlend in="SourceGraphic" in2="specMask" mode="screen" />
+          </filter>
         </defs>
         <g transform={`translate(${padding}, ${padding})`}>
           {/* Zone segments on the track */}
@@ -144,6 +152,7 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor, zoneG
 
             return (
               <>
+                {/* Glassy progress arc — translucent fill with specular highlight */}
                 <circle
                   cx={center} cy={center} r={radius} fill="none"
                   stroke={strokeColor} strokeWidth={strokeWidth}
@@ -151,14 +160,26 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor, zoneG
                   strokeDashoffset={0}
                   strokeLinecap="round"
                   transform={`rotate(-90 ${center} ${center})`}
-                  style={{ filter: `drop-shadow(0 0 6px ${glowColor})` }}
+                  opacity={0.55}
+                  filter="url(#glassy)"
+                  style={{ filter: `drop-shadow(0 0 8px ${glowColor})` }}
+                />
+                {/* Lighter inner edge for glass refraction */}
+                <circle
+                  cx={center} cy={center} r={radius} fill="none"
+                  stroke="white" strokeWidth={strokeWidth - 16}
+                  strokeDasharray={`${arcLen} ${circumference}`}
+                  strokeDashoffset={0}
+                  strokeLinecap="round"
+                  transform={`rotate(-90 ${center} ${center})`}
+                  opacity={0.08}
                 />
                 {/* Subtle bright cap at leading edge */}
                 <circle
                   cx={headX} cy={headY}
                   r={strokeWidth / 2 - 2}
                   fill="white"
-                  opacity={0.15}
+                  opacity={0.18}
                   filter="url(#head-glow)"
                 />
               </>
