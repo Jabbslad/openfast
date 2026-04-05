@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { db } from "../../db/database";
 import { PROTOCOLS } from "../../utils/protocols";
 import { exportAllData, importAllData, clearAllData } from "../../db/export-import";
-import { isSupported as notificationsSupported, requestPermission } from "../../utils/notifications";
+import { isSupported as notificationsSupported, requestPermission, sendNotification } from "../../utils/notifications";
+import { ZONE_NOTIFICATIONS } from "../../content/zone-notifications";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import type { UserProfile } from "../../types";
 
@@ -132,12 +133,23 @@ export function SettingsScreen() {
             <p className="text-gray-500 text-xs mt-1">Not supported on this device</p>
           </div>
         ) : (
-          <SettingsRow
-            label="Notifications"
-            value={notifStatus === "granted" ? "On" : notifStatus === "denied" ? "Enable in Settings" : "Off"}
-            valueColor={notifStatus === "granted" ? "text-green-400" : undefined}
-            onPress={handleNotificationToggle}
-          />
+          <>
+            <SettingsRow
+              label="Notifications"
+              value={notifStatus === "granted" ? "On" : notifStatus === "denied" ? "Enable in Settings" : "Off"}
+              valueColor={notifStatus === "granted" ? "text-green-400" : undefined}
+              onPress={handleNotificationToggle}
+            />
+            {notifStatus === "granted" && (
+              <SettingsRow
+                label="Test Notification"
+                onPress={() => {
+                  const notif = ZONE_NOTIFICATIONS.fat_burning;
+                  sendNotification(notif.title, notif.body);
+                }}
+              />
+            )}
+          </>
         )}
       </div>
 
