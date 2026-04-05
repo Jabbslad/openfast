@@ -39,7 +39,7 @@ export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
         if (entry.isIntersecting && !isVisible.current) {
           isVisible.current = true;
           if (clampedFill > 0) {
-            animateRise(0, clampedFill, 1200);
+            animateRise(0, clampedFill, 1500, 10);
           }
           hasEntrance.current = true;
         } else if (!entry.isIntersecting) {
@@ -70,7 +70,8 @@ export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
 
     if (diff > 0) {
       // Animate from previous fill to new fill with splash
-      animateRise(prev, clampedFill, 800, diff * 0.15);
+      // Splash intensity is fixed at a visible level regardless of amount
+      animateRise(prev, clampedFill, 2000, 6);
     } else if (diff < 0) {
       // Water removed — just settle
       setDisplayFill(clampedFill);
@@ -81,24 +82,26 @@ export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
   function animateRise(from: number, to: number, duration: number, splashIntensity = 8) {
     cancelAnimationFrame(animRef.current);
     const start = performance.now();
+    // Total animation time includes the slosh settling after the rise
+    const totalDuration = duration + 1500;
 
     function tick(now: number) {
       const elapsed = now - start;
-      const t = Math.min(elapsed / duration, 1);
+      const riseT = Math.min(elapsed / duration, 1);
 
       // Ease-out cubic for the rise
-      const eased = 1 - Math.pow(1 - t, 3);
+      const eased = 1 - Math.pow(1 - riseT, 3);
       setDisplayFill(from + (to - from) * eased);
 
-      // Damped sine wave for the slosh
-      // Starts strong, oscillates 3-4 times, dampens to 0
+      // Damped sine wave for the slosh — starts when rise begins,
+      // continues after rise completes to let the water settle
       const waveT = elapsed / 1000;
-      const damping = Math.exp(-waveT * 3);
-      const wave = damping * splashIntensity * Math.sin(waveT * 14);
+      const damping = Math.exp(-waveT * 1.8); // slower damping = longer visible slosh
+      const wave = damping * splashIntensity * Math.sin(waveT * 12);
       setWaveAmplitude(wave);
-      setWavePhase(waveT * 8);
+      setWavePhase(waveT * 6);
 
-      if (t < 1 || Math.abs(wave) > 0.1) {
+      if (elapsed < totalDuration && (riseT < 1 || Math.abs(wave) > 0.05)) {
         animRef.current = requestAnimationFrame(tick);
       } else {
         setWaveAmplitude(0);
