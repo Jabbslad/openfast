@@ -8,6 +8,8 @@ Before every commit, you MUST:
    - Add new entries to the top of the `CHANGELOG` array (newest first)
    - If the current version already has an entry for today, append changes to it
    - If this is a new version, create a new entry with today's date
+   - **Only log user-facing functionality changes** — new features, bug fixes, UX improvements, behaviour changes
+   - **Do NOT log**: test additions/updates, markdown file changes (CLAUDE.md, AGENTS.md, README), refactors with no visible change, CI/build config tweaks, code comments
 
 2. **Update the semver version** in `openfast/src/content/changelog.ts` and ensure it follows semantic versioning:
    - **Patch** (0.1.X): Bug fixes, styling tweaks, copy changes, small UX adjustments

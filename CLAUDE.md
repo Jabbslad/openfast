@@ -46,6 +46,10 @@ Deployment happens automatically via GitHub Actions on push to `master`. The sit
 
 **Version**: Injected at build time via Vite's `define` option as `__APP_VERSION__`. Format: `0.1.0-<git short hash>`. Uses `GITHUB_SHA` in CI, `git rev-parse` locally.
 
+## Agent Workflow
+
+See [AGENTS.md](AGENTS.md) for commit requirements. Every commit must update the changelog and semver version before pushing.
+
 ## Key Conventions
 
 - Dark theme only. Background: `#0f0f1a` → `#1a1a2e` gradient. Accent: indigo. Surface: `bg-white/[0.04]` with `border-white/[0.06]`.
@@ -54,7 +58,7 @@ Deployment happens automatically via GitHub Actions on push to `master`. The sit
 - Touch targets: minimum 44px (`min-h-[44px] min-w-[44px]`).
 - `body { position: fixed }` + `h-[100dvh]` + `overflow: hidden` on root prevents iOS rubber-band bounce. Scrollable screens use `overflow-y-auto` on their own container.
 - Tests use Vitest + React Testing Library + `fake-indexeddb`. Each screen test does `db.delete()` + `db.open()` in `beforeEach`.
-- The `src/content/changelog.ts` file must be updated when adding features.
+- See [AGENTS.md](AGENTS.md) for changelog and versioning rules.
 
 ## GitHub Pages Specifics
 
