@@ -6,6 +6,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "0.1.2",
+    date: "2026-04-05",
+    changes: [
+      "Removed Meal Log tab from navigation bar (feature temporarily disabled)",
+    ],
+  },
+  {
     version: "0.1.1",
     date: "2026-04-05",
     changes: [

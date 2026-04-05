@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { TabBar } from "./components/TabBar";
 import { TimerScreen } from "./screens/Timer/TimerScreen";
-import { MealLogScreen } from "./screens/MealLog/MealLogScreen";
 import { HydrationScreen } from "./screens/Hydration/HydrationScreen";
 import { ProgressScreen } from "./screens/Progress/ProgressScreen";
 import { SettingsScreen } from "./screens/Settings/SettingsScreen";
@@ -41,7 +40,6 @@ export default function App() {
         <main className="flex-1 flex flex-col overflow-hidden">
           <Routes>
             <Route path="/" element={<TimerScreen />} />
-            <Route path="/log" element={<MealLogScreen />} />
             <Route path="/hydration" element={<HydrationScreen />} />
             <Route path="/progress" element={<ProgressScreen />} />
             <Route path="/settings" element={<SettingsScreen />} />

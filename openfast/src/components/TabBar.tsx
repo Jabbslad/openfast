@@ -11,16 +11,6 @@ function TimerIcon() {
   );
 }
 
-function LogIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 4h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V5a1 1 0 011-1z" />
-      <path d="M8 9h8" />
-      <path d="M8 13h5" />
-    </svg>
-  );
-}
-
 function WaterIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -50,7 +40,6 @@ function SettingsIcon() {
 
 const tabs = [
   { to: "/", label: "Timer", Icon: TimerIcon },
-  { to: "/log", label: "Log", Icon: LogIcon },
   { to: "/hydration", label: "Water", Icon: WaterIcon },
   { to: "/progress", label: "Progress", Icon: ProgressIcon },
   { to: "/settings", label: "Settings", Icon: SettingsIcon },
