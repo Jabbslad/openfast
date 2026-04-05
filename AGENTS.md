@@ -1,5 +1,9 @@
 # AGENTS.md
 
+## Design Reference
+
+See [DESIGN.md](DESIGN.md) for the design system reference. This file documents the SpaceX-inspired design language — use it as a guide for visual decisions including colour palette, typography, component styling, spacing, and depth/elevation patterns. When creating or modifying UI components, consult DESIGN.md to ensure consistency.
+
 ## Commit Requirements
 
 Before every commit, you MUST:
