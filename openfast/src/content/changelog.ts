@@ -6,6 +6,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "0.2.1",
+    date: "2026-04-05",
+    changes: [
+      "Fixed PWA refresh button not working — tapping 'Refresh' on the update prompt now correctly reloads to the new version",
+    ],
+  },
+  {
     version: "0.2.0",
     date: "2026-04-05",
     changes: [
