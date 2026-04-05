@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+// Navigation is handled via props instead of React Router
 import { db } from "../../db/database";
 import { PROTOCOLS } from "../../utils/protocols";
 import { exportAllData, importAllData, clearAllData } from "../../db/export-import";
@@ -12,8 +12,12 @@ import type { UserProfile } from "../../types";
 declare const __APP_VERSION__: string;
 const VERSION = typeof __APP_VERSION__ !== "undefined" ? __APP_VERSION__ : "0.1.0-dev";
 
-export function SettingsScreen() {
-  const navigate = useNavigate();
+interface SettingsScreenProps {
+  onNavigateGuides?: () => void;
+}
+
+export function SettingsScreen({ onNavigateGuides }: SettingsScreenProps = {}) {
+  // Navigation via props
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -182,7 +186,7 @@ export function SettingsScreen() {
       <div className="bg-white/[0.04] border border-white/[0.06] rounded-xl overflow-hidden divide-y divide-white/[0.06] mb-6">
         <SettingsRow
           label="Tips & Guides"
-          onPress={() => navigate("/settings/guides")}
+          onPress={() => onNavigateGuides?.()}
         />
         <SettingsRow
           label="Check for Updates"

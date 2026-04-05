@@ -1,6 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { TabBar } from "./components/TabBar";
+import { SwipeNav } from "./components/SwipeNav";
 import { UpdatePrompt } from "./components/UpdatePrompt";
 import { InstallPrompt } from "./components/InstallPrompt";
 import { LandscapeOverlay } from "./components/LandscapeOverlay";
@@ -15,6 +14,8 @@ import { db } from "./db/database";
 export default function App() {
   const [ready, setReady] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showGuides, setShowGuides] = useState(false);
 
   useEffect(() => {
     async function init() {
@@ -49,23 +50,52 @@ export default function App() {
   }
 
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
+    <>
       {showOnboarding && <OnboardingIntro onComplete={handleOnboardingComplete} />}
       <UpdatePrompt />
       <InstallPrompt />
       <LandscapeOverlay />
-      <div className="flex flex-col h-full bg-navy-900 text-white overflow-hidden">
-        <main className="flex-1 flex flex-col overflow-hidden">
-          <Routes>
-            <Route path="/" element={<TimerScreen />} />
-            <Route path="/hydration" element={<HydrationScreen />} />
-            <Route path="/progress" element={<ProgressScreen />} />
-            <Route path="/settings" element={<SettingsScreen />} />
-            <Route path="/settings/guides" element={<TipsGuides />} />
-          </Routes>
-        </main>
-        <TabBar />
+      <div className="h-full bg-navy-900 text-white overflow-hidden">
+        <SwipeNav initialIndex={1} onSettingsTap={() => setShowSettings(true)}>
+          <HydrationScreen />
+          <TimerScreen />
+          <ProgressScreen />
+        </SwipeNav>
       </div>
-    </BrowserRouter>
+
+      {/* Settings as full-screen overlay */}
+      {showSettings && (
+        <div className="fixed inset-0 z-50 bg-[#0f0f1a] flex flex-col overflow-hidden">
+          <div className="shrink-0 pt-[env(safe-area-inset-top,0px)] px-4 py-3 flex items-center justify-between">
+            <button
+              onClick={() => setShowSettings(false)}
+              className="text-indigo-400 text-sm font-medium min-h-[44px] flex items-center"
+            >
+              &larr; Back
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto">
+            <SettingsScreen onNavigateGuides={() => { setShowSettings(false); setShowGuides(true); }} />
+          </div>
+        </div>
+      )}
+
+      {/* Tips & Guides overlay */}
+      {showGuides && (
+        <div className="fixed inset-0 z-50 bg-[#0f0f1a] flex flex-col overflow-hidden">
+          <div className="shrink-0 pt-[env(safe-area-inset-top,0px)] px-4 py-3 flex items-center justify-between">
+            <button
+              onClick={() => { setShowGuides(false); setShowSettings(true); }}
+              className="text-indigo-400 text-sm font-medium min-h-[44px] flex items-center"
+            >
+              &larr; Settings
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto">
+            <TipsGuides />
+          </div>
+        </div>
+      )}
+    </>
   );
 }

@@ -6,6 +6,15 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "0.4.0",
+    date: "2026-04-05",
+    changes: [
+      "Replaced bottom tab bar with immersive swipe navigation — swipe between Water, Timer, and Progress screens with dot indicators at the top",
+      "Settings moved to a gear icon in the top-right corner, opens as a full-screen overlay",
+      "Eliminated all iOS PWA safe-area-inset-bottom issues by removing bottom-positioned navigation entirely",
+    ],
+  },
+  {
     version: "0.3.3",
     date: "2026-04-05",
     changes: [
