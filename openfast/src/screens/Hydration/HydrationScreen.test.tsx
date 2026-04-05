@@ -1,17 +1,23 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, afterAll } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { HydrationScreen } from "./HydrationScreen";
 import { db } from "../../db/database";
 
+beforeEach(async () => {
+  cleanup();
+  await db.delete();
+  await db.open();
+  await db.userProfile.add({ selectedProtocol: "16:8", dailyWaterGoalMl: 2500, createdAt: new Date() });
+});
+
 afterEach(() => {
   cleanup();
 });
 
-beforeEach(async () => {
+afterAll(async () => {
+  cleanup();
   await db.delete();
-  await db.open();
-  await db.userProfile.add({ selectedProtocol: "16:8", dailyWaterGoalMl: 2500, createdAt: new Date() });
 });
 
 describe("HydrationScreen", () => {
