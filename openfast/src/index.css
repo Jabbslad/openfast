@@ -7,9 +7,10 @@ html, body {
   margin: 0;
   overflow: hidden;
   overscroll-behavior: none;
-  background: #0f0f1a;
-  /* iOS PWA: theme-color only affects the status bar area.
-     The home indicator area uses the html/body background. */
+  /* Gradient matching the screens — extends seamlessly into unsafe areas
+     (status bar at top, home indicator at bottom) on iOS PWA */
+  background: linear-gradient(to bottom right, #0f0f1a, #1a1a2e);
+  background-attachment: fixed;
 }
 
 body {
