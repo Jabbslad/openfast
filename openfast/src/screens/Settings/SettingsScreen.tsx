@@ -6,6 +6,7 @@ import { exportAllData, importAllData, clearAllData } from "../../db/export-impo
 import { isSupported as notificationsSupported, requestPermission, sendNotification } from "../../utils/notifications";
 import { ZONE_NOTIFICATIONS } from "../../content/zone-notifications";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
+import { ChangelogSheet } from "../../components/ChangelogSheet";
 import type { UserProfile } from "../../types";
 
 declare const __APP_VERSION__: string;
@@ -21,6 +22,7 @@ export function SettingsScreen() {
   const [showWaterGoal, setShowWaterGoal] = useState(false);
   const [waterGoalInput, setWaterGoalInput] = useState("");
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [showChangelog, setShowChangelog] = useState(false);
   const [notifStatus, setNotifStatus] = useState<"granted" | "prompt" | "denied" | "not-installed" | "unsupported">("prompt");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -196,10 +198,11 @@ export function SettingsScreen() {
             window.location.href = import.meta.env.BASE_URL;
           }}
         />
-        <div className="flex items-center justify-between px-4 py-3.5">
-          <span className="text-white text-sm">Version</span>
-          <span className="text-gray-500 text-sm">{VERSION}</span>
-        </div>
+        <SettingsRow
+          label="Version"
+          value={VERSION}
+          onPress={() => setShowChangelog(true)}
+        />
       </div>
 
       {/* Hidden file input for import */}
@@ -303,6 +306,11 @@ export function SettingsScreen() {
         confirmValue="DELETE"
         onConfirm={handleClearConfirmed}
         onCancel={() => setShowClearConfirm(false)}
+      />
+
+      <ChangelogSheet
+        open={showChangelog}
+        onClose={() => setShowChangelog(false)}
       />
     </div>
   );
