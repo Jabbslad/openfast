@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { formatDuration } from "../utils/time";
 import { getAllZones, getZoneForElapsedMs } from "../utils/zones";
 
@@ -40,7 +41,7 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor, zoneG
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const ringScaleMs = getRingScale(targetMs);
-  const progress = ringScaleMs > 0 ? Math.min(elapsedMs / ringScaleMs, 1) : 0;
+  const targetProgress = ringScaleMs > 0 ? Math.min(elapsedMs / ringScaleMs, 1) : 0;
   const goalReached = elapsedMs >= targetMs && targetMs > 0;
   const strokeColor = goalReached ? "#4ade80" : (zoneColor ?? "#818cf8");
   const glowColor = goalReached ? "rgba(74, 222, 128, 0.3)" : (zoneGlowColor ?? "rgba(129, 140, 248, 0.25)");
@@ -48,6 +49,74 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor, zoneG
   const elapsedHours = elapsedMs / 3_600_000;
   const currentZone = getZoneForElapsedMs(elapsedMs);
   const zones = getAllZones();
+
+  // Animate progress arc from 0 to current each time the ring scrolls into view
+  const [animatedProgress, setAnimatedProgress] = useState(0);
+  const animationRef = useRef<number>(0);
+  const ringRef = useRef<HTMLDivElement>(null);
+  const isVisible = useRef(false);
+  const lastTargetRef = useRef(0);
+
+  // Detect visibility via IntersectionObserver
+  useEffect(() => {
+    const el = ringRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isVisible.current) {
+          isVisible.current = true;
+          // Trigger entrance animation
+          triggerAnimation();
+        } else if (!entry.isIntersecting) {
+          isVisible.current = false;
+          setAnimatedProgress(0);
+        }
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function triggerAnimation() {
+    cancelAnimationFrame(animationRef.current);
+    const target = lastTargetRef.current;
+    if (target === 0) return;
+
+    const duration = 1500;
+    const start = performance.now();
+
+    function tick(now: number) {
+      const elapsed = now - start;
+      const t = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      setAnimatedProgress(eased * lastTargetRef.current);
+
+      if (t < 1) {
+        animationRef.current = requestAnimationFrame(tick);
+      }
+    }
+
+    setAnimatedProgress(0);
+    animationRef.current = requestAnimationFrame(tick);
+  }
+
+  // Keep ref updated with latest target progress
+  useEffect(() => {
+    lastTargetRef.current = targetProgress;
+    // If already visible (normal ticking), update directly
+    if (isVisible.current && animatedProgress > 0) {
+      setAnimatedProgress(targetProgress);
+    }
+  }, [targetProgress, animatedProgress]);
+
+  useEffect(() => {
+    return () => cancelAnimationFrame(animationRef.current);
+  }, []);
+
+  const progress = animatedProgress;
 
   const padding = 12;
   const fullSize = size + padding * 2;
@@ -57,6 +126,7 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor, zoneG
 
   return (
     <div
+      ref={ringRef}
       role="progressbar"
       aria-valuenow={Math.round(progress * 100)}
       aria-valuemin={0}

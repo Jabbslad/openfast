@@ -6,6 +6,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "0.4.2",
+    date: "2026-04-05",
+    changes: [
+      "Progress ring arc now animates from zero to current position each time you switch to the Timer screen — smooth 1.5s ease-out sweep",
+    ],
+  },
+  {
     version: "0.4.1",
     date: "2026-04-05",
     changes: [
