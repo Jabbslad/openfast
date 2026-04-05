@@ -6,6 +6,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "0.4.8",
+    date: "2026-04-05",
+    changes: [
+      "Protocol picker on the Timer idle screen — tap to switch between all 7 fasting protocols before starting, with selected protocol highlighted and fasting/eating window description shown",
+    ],
+  },
+  {
     version: "0.4.7",
     date: "2026-04-05",
     changes: [

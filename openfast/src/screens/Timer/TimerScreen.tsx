@@ -3,7 +3,7 @@ import { ProgressRing } from "../../components/ProgressRing";
 import { startFast, endFast, cancelFast, getActiveFast, updateFastStartTime } from "../../hooks/useFastingTimer";
 import { evaluateFastingStreak, getStreak } from "../../hooks/useStreaks";
 import { evaluateBadges } from "../../hooks/useBadges";
-import { getProtocol, getTargetDurationMs } from "../../utils/protocols";
+import { getProtocol, getTargetDurationMs, PROTOCOLS } from "../../utils/protocols";
 import { sendNotification, requestPermission } from "../../utils/notifications";
 import { formatTime, formatDuration } from "../../utils/time";
 import { getZoneForElapsedMs } from "../../utils/zones";
@@ -99,6 +99,12 @@ export function TimerScreen() {
       clearBadge();
     }
   }, [badgeHours]);
+
+  async function handleSelectProtocol(protocolId: string) {
+    if (!profile?.id) return;
+    await db.userProfile.update(profile.id, { selectedProtocol: protocolId });
+    setProfile({ ...profile, selectedProtocol: protocolId });
+  }
 
   async function handleStart() {
     if (!profile) return;
@@ -215,7 +221,41 @@ export function TimerScreen() {
           </button>
         </>
       ) : (
-        <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center gap-5 w-full max-w-sm">
+          {/* Protocol picker */}
+          <div className="w-full">
+            <div className="flex gap-2 overflow-x-auto pb-2 px-1 scrollbar-hide">
+              {PROTOCOLS.map((p) => {
+                const isSelected = p.id === protocolId;
+                return (
+                  <button
+                    key={p.id}
+                    onClick={() => handleSelectProtocol(p.id)}
+                    className={`shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 min-h-[44px] ${
+                      isSelected
+                        ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/25"
+                        : "bg-white/[0.06] text-gray-400 hover:bg-white/[0.1] hover:text-gray-200"
+                    }`}
+                  >
+                    {p.name}
+                  </button>
+                );
+              })}
+            </div>
+            {/* Selected protocol description */}
+            {protocol && (
+              <div className="text-center mt-3">
+                <span className="text-gray-400 text-xs">
+                  {protocol.isWeekly
+                    ? "Fast 2 days per week"
+                    : `${protocol.fastingHours}h fasting · ${protocol.eatingHours}h eating`}
+                </span>
+                <span className="text-gray-600 text-xs ml-2">({protocol.category})</span>
+              </div>
+            )}
+          </div>
+
+          {/* Start button */}
           <button onClick={handleStart}
             className="bg-indigo-500 hover:bg-indigo-400 text-white px-14 py-4 rounded-full font-semibold text-lg min-h-[52px] active:scale-95 transition-all duration-200 shadow-lg shadow-indigo-500/25">
             Start Fast
