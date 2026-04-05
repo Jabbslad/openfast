@@ -211,73 +211,59 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor: _zone
             );
           })}
 
-          {/* Progress arc */}
+          {/* Progress arc — one segment per zone, each in its zone colour */}
           {progress > 0 && (() => {
-            const arcLen = circumference * progress;
             const headAngle = progress * 2 * Math.PI - Math.PI / 2;
             const headX = center + Math.cos(headAngle) * radius;
             const headY = center + Math.sin(headAngle) * radius;
+            const totalArcLen = circumference * progress;
 
-            // Build gradient stops from zone colours traversed
-            const gradStops: { offset: string; color: string }[] = [];
+            // Build per-zone arc segments that together form the progress arc
+            const segments: { start: number; len: number; color: string }[] = [];
 
             for (const zone of zones) {
-              const zoneStartMs = zone.startHour * 3_600_000;
-              const zoneEndMsActual = zone.endHour ? zone.endHour * 3_600_000 : ringScaleMs;
+              const zoneStartFrac = (zone.startHour * 3_600_000) / ringScaleMs;
+              const zoneEndFrac = Math.min(
+                (zone.endHour ? zone.endHour * 3_600_000 : ringScaleMs) / ringScaleMs,
+                1
+              );
 
-              // Zone start/end as fraction of the ring
-              const zoneFracStart = zoneStartMs / ringScaleMs;
-              const zoneFracEnd = Math.min(zoneEndMsActual / ringScaleMs, 1);
+              // Clip to the progress range [0, progress]
+              const segStart = Math.max(zoneStartFrac, 0);
+              const segEnd = Math.min(zoneEndFrac, progress);
+              if (segEnd <= segStart) continue;
 
-              // Only include zones that overlap with the progress arc
-              if (zoneFracStart >= progress) continue;
-              if (zoneFracEnd <= 0) continue;
-
-              const stopStart = Math.max(0, zoneFracStart / progress);
-              const stopEnd = Math.min(1, zoneFracEnd / progress);
-
-              gradStops.push({ offset: `${(stopStart * 100).toFixed(1)}%`, color: zone.color });
-              if (stopEnd < 1) {
-                gradStops.push({ offset: `${(stopEnd * 100).toFixed(1)}%`, color: zone.color });
-              }
+              const segLen = (segEnd - segStart) * circumference;
+              segments.push({ start: segStart, len: segLen, color: zone.color });
             }
-
-            // Gradient runs from arc start (12 o'clock) to arc end
-            const arcStartAngle = -Math.PI / 2;
-            const gx1 = center + Math.cos(arcStartAngle) * radius;
-            const gy1 = center + Math.sin(arcStartAngle) * radius;
-            const gx2 = headX;
-            const gy2 = headY;
 
             return (
               <>
-                <defs>
-                  <linearGradient id="progress-grad"
-                    x1={gx1} y1={gy1} x2={gx2} y2={gy2}
-                    gradientUnits="userSpaceOnUse"
-                  >
-                    {gradStops.map((s, i) => (
-                      <stop key={i} offset={s.offset} stopColor={s.color} />
-                    ))}
-                  </linearGradient>
-                </defs>
-                {/* Progress arc with zone gradient */}
-                <circle
-                  cx={center} cy={center} r={radius} fill="none"
-                  stroke="url(#progress-grad)" strokeWidth={strokeWidth}
-                  strokeDasharray={`${arcLen} ${circumference}`}
-                  strokeDashoffset={0}
-                  strokeLinecap="round"
-                  transform={`rotate(-90 ${center} ${center})`}
-                  opacity={0.55}
-                  filter="url(#glassy)"
-                  style={{ filter: `drop-shadow(0 0 8px ${glowColor})` }}
-                />
+                {/* Zone-coloured arc segments */}
+                {segments.map((seg, i) => {
+                  const isFirst = i === 0;
+                  const isLast = i === segments.length - 1;
+                  const dashOffset = -(seg.start * circumference);
+                  return (
+                    <circle
+                      key={i}
+                      cx={center} cy={center} r={radius} fill="none"
+                      stroke={seg.color}
+                      strokeWidth={strokeWidth}
+                      strokeDasharray={`${seg.len} ${circumference}`}
+                      strokeDashoffset={dashOffset}
+                      strokeLinecap={isFirst || isLast ? "round" : "butt"}
+                      transform={`rotate(-90 ${center} ${center})`}
+                      opacity={0.55}
+                      style={{ filter: `drop-shadow(0 0 6px ${glowColor})` }}
+                    />
+                  );
+                })}
                 {/* Lighter inner edge for glass refraction */}
                 <circle
                   cx={center} cy={center} r={radius} fill="none"
                   stroke="white" strokeWidth={strokeWidth - 16}
-                  strokeDasharray={`${arcLen} ${circumference}`}
+                  strokeDasharray={`${totalArcLen} ${circumference}`}
                   strokeDashoffset={0}
                   strokeLinecap="round"
                   transform={`rotate(-90 ${center} ${center})`}
