@@ -11,7 +11,6 @@ export const CHANGELOG: ChangelogEntry[] = [
     changes: [
       "Install prompt now triggers native app install dialog on Android and desktop Chrome/Edge — one tap to install",
       "Clear All Data now resets the install prompt so it reappears after clearing",
-      "Fixed gap below tab bar on iOS devices with home indicator",
       "Version number now reads from changelog instead of being hardcoded",
     ],
   },
