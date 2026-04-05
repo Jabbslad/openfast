@@ -54,7 +54,7 @@ export default function App() {
       <UpdatePrompt />
       <InstallPrompt />
       <LandscapeOverlay />
-      <div className="flex flex-col h-[100dvh] bg-navy-900 text-white overflow-hidden">
+      <div className="flex flex-col h-full bg-navy-900 text-white overflow-hidden">
         <main className="flex-1 flex flex-col overflow-hidden">
           <Routes>
             <Route path="/" element={<TimerScreen />} />
