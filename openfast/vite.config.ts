@@ -27,6 +27,20 @@ export default defineConfig({
           { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
           { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
         ],
+        shortcuts: [
+          {
+            name: "Start Fast",
+            short_name: "Fast",
+            url: "/",
+            icons: [{ src: "/icons/icon-192.png", sizes: "192x192" }],
+          },
+          {
+            name: "Progress",
+            short_name: "Progress",
+            url: "/progress",
+            icons: [{ src: "/icons/icon-192.png", sizes: "192x192" }],
+          },
+        ],
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],

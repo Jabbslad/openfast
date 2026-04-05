@@ -5,6 +5,7 @@ import { BADGE_DEFINITIONS } from "../../hooks/useBadges";
 import { formatDuration, isSameDay } from "../../utils/time";
 import { FastDetailSheet } from "../../components/FastDetailSheet";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
+import { canShare, shareStreak } from "../../utils/share";
 import type { Badge, FastingSession, Streak } from "../../types";
 
 interface WeeklyCalendarProps {
@@ -120,12 +121,22 @@ export function ProgressScreen() {
     <div className="flex-1 bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] text-white p-4 overflow-y-auto">
       {/* Stats Row */}
       <div className="grid grid-cols-3 gap-3 mb-5">
-        <div className="bg-white/[0.04] border border-white/[0.06] rounded-2xl p-4 flex flex-col items-center">
+        <button
+          type="button"
+          onClick={() => {
+            const count = fastingStreak?.currentCount ?? 0;
+            if (canShare() && count > 0) shareStreak(count);
+          }}
+          className="bg-white/[0.04] border border-white/[0.06] rounded-2xl p-4 flex flex-col items-center"
+        >
           <span className="text-orange-400 text-3xl font-bold">
             {loading ? "\u2014" : (fastingStreak?.currentCount ?? 0)}
           </span>
           <span className="text-gray-500 text-[10px] font-medium mt-1.5 text-center uppercase tracking-wider">Fasting Streak</span>
-        </div>
+          {canShare() && (fastingStreak?.currentCount ?? 0) > 0 && (
+            <span className="text-gray-600 text-[9px] mt-1">Tap to share</span>
+          )}
+        </button>
         <div className="bg-white/[0.04] border border-white/[0.06] rounded-2xl p-4 flex flex-col items-center">
           <span className="text-cyan-400 text-3xl font-bold">
             {loading ? "\u2014" : (hydrationStreak?.currentCount ?? 0)}

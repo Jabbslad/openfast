@@ -5,9 +5,13 @@ import { evaluateFastingStreak, getStreak } from "../../hooks/useStreaks";
 import { evaluateBadges } from "../../hooks/useBadges";
 import { getProtocol, getTargetDurationMs } from "../../utils/protocols";
 import { sendNotification, requestPermission } from "../../utils/notifications";
-import { formatTime } from "../../utils/time";
+import { formatTime, formatDuration } from "../../utils/time";
 import { getZoneForElapsedMs } from "../../utils/zones";
 import { ZONE_NOTIFICATIONS } from "../../content/zone-notifications";
+import { setBadge, clearBadge } from "../../utils/badge";
+import { setThemeColor, resetThemeColor } from "../../utils/theme-color";
+import { lockPortrait } from "../../utils/orientation";
+import { shareFastResult } from "../../utils/share";
 import { ZoneTimeline } from "../../components/ZoneTimeline";
 import { ZoneExplorer } from "../../components/ZoneExplorer";
 import { EditStartTimeSheet } from "../../components/EditStartTimeSheet";
@@ -29,6 +33,7 @@ export function TimerScreen() {
   const [explorerInitialZone, setExplorerInitialZone] = useState<string | undefined>();
   const [editStartOpen, setEditStartOpen] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [showShareToast, setShowShareToast] = useState(false);
 
   // Load initial state from DB
   useEffect(() => {
@@ -87,6 +92,34 @@ export function TimerScreen() {
     lastZoneRef.current = currentZone.id;
   }, [elapsedMs, activeFast]);
 
+  // Update app badge when fasting (shows elapsed hours)
+  const badgeHours = activeFast ? Math.floor(elapsedMs / 3_600_000) : -1;
+  useEffect(() => {
+    if (badgeHours >= 0) {
+      setBadge(Math.max(badgeHours, 1));
+    } else {
+      clearBadge();
+    }
+  }, [badgeHours]);
+
+  // Update theme-color to match current zone
+  const currentZoneId = activeFast && elapsedMs > 0 ? getZoneForElapsedMs(elapsedMs).id : null;
+  useEffect(() => {
+    if (currentZoneId) {
+      const z = getZoneForElapsedMs(elapsedMs);
+      setThemeColor(z.color);
+    } else {
+      resetThemeColor();
+    }
+    return () => resetThemeColor();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentZoneId]);
+
+  // Lock orientation to portrait on mount
+  useEffect(() => {
+    lockPortrait();
+  }, []);
+
   async function handleStart() {
     if (!profile) return;
     // Request notification permission on first fast start
@@ -101,6 +134,9 @@ export function TimerScreen() {
 
   async function handleEnd() {
     if (!activeFast?.id) return;
+    const finalElapsed = elapsedMs;
+    const finalZone = getZoneForElapsedMs(finalElapsed);
+    const finalProtocol = activeFast.protocol;
     await endFast(activeFast.id);
     await evaluateFastingStreak(new Date());
     await evaluateBadges();
@@ -110,6 +146,17 @@ export function TimerScreen() {
     setElapsedMs(0);
     notifiedRef.current = false;
     lastZoneRef.current = null;
+
+    // Offer to share the result
+    const shared = await shareFastResult({
+      protocol: finalProtocol,
+      durationLabel: formatDuration(finalElapsed),
+      zone: finalZone.name,
+    });
+    if (shared) {
+      setShowShareToast(true);
+      setTimeout(() => setShowShareToast(false), 2000);
+    }
   }
 
   async function handleCancel() {
@@ -233,6 +280,12 @@ export function TimerScreen() {
         onConfirm={handleCancel}
         onCancel={() => setShowCancelConfirm(false)}
       />
+
+      {showShareToast && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl bg-green-600 text-white text-sm font-medium shadow-lg">
+          Shared!
+        </div>
+      )}
     </div>
   );
 }
