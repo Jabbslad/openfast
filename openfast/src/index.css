@@ -5,7 +5,7 @@
 html {
   overflow: hidden;
   overscroll-behavior: none;
-  /* Match tab bar bg so the iOS home indicator area is seamless */
+  /* Match tab bar bg so the home indicator area is seamless */
   background: #0a0a14;
 }
 
@@ -18,17 +18,30 @@ body {
   background: #0f0f1a;
   color: #fff;
   position: fixed;
-  width: 100%;
-  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   overflow: hidden;
   overscroll-behavior: none;
 }
 
 #root {
-  height: 100dvh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+/* iOS standalone PWA: viewport-fit=cover makes 100vh equal the safe area,
+   not the full screen. This extends the layout to fill the physical screen
+   and uses padding to keep content inside the safe zone. */
+@media (display-mode: standalone) {
+  body {
+    /* Override fixed bottom:0 which clips at safe-area on iOS */
+    bottom: calc(-1 * env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
 }
 
 /* Smooth scrolling for all scrollable areas */

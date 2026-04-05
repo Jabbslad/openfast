@@ -9,7 +9,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     version: "0.3.3",
     date: "2026-04-05",
     changes: [
-      "Fixed tab bar positioning on iOS PWA — reverted to proven layout strategy that keeps the tab bar flush to the screen bottom",
+      "Fixed tab bar gap on iOS PWA — body now extends past the safe area boundary in standalone mode so the tab bar background fills behind the home indicator",
     ],
   },
   {
