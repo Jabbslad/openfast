@@ -69,12 +69,11 @@ export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
     prevFillRef.current = clampedFill;
 
     if (diff > 0) {
-      // Animate from previous fill to new fill with splash
-      // Splash intensity is fixed at a visible level regardless of amount
+      // Water added — rise with splash
       animateRise(prev, clampedFill, 2000, 6);
     } else if (diff < 0) {
-      // Water removed — just settle
-      setDisplayFill(clampedFill);
+      // Water removed — drop with slosh
+      animateRise(prev, clampedFill, 1500, 5);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clampedFill]);
