@@ -29,8 +29,6 @@ jobs:
           cache-dependency-path: openfast/package-lock.json
       - run: npm ci
       - run: npx vite build
-        env:
-          GITHUB_PAGES: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: openfast/dist
