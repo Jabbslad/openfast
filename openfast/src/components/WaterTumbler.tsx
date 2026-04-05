@@ -228,20 +228,16 @@ export function WaterTumbler({ fillPercent, visible = true, goalReached = false,
 
       {/* Straw drawn BEFORE water so the water overlays the submerged portion */}
       {showStraw && (() => {
-        const sw = 6; // straw width
-        // Straw body: leaning from near the base to the right rim
-        const rimX = cx + topWidth / 2 - 10;
-        const rimY = bodyTop;
+        const sw = 6;
+        // Single bend point near the rim
+        const bendX = cx + topWidth / 2 - 10;
+        const bendY = bodyTop + 2;
+        // Lower body: from bend down into the glass
         const btmX = cx + 2;
         const btmY = bodyBottom - 6;
-        // Bendy section: corrugated bend at the rim, then top tilts down-right
-        const bendBottomX = rimX;
-        const bendBottomY = rimY;
-        const bendTopX = rimX - 2;
-        const bendTopY = rimY - 8;
-        // Top section angles outward and tilts downward
-        const tipX = rimX + 16;
-        const tipY = rimY - 18;
+        // Upper body: from bend outward and slightly upward
+        const tipX = bendX + 18;
+        const tipY = bendY - 16;
 
         return (
           <g transform={`translate(0, ${strawY})`}>
@@ -251,26 +247,11 @@ export function WaterTumbler({ fillPercent, visible = true, goalReached = false,
                 <rect width="4" height="8" fill="#ef4444" />
               </pattern>
             </defs>
-            {/* Lower straw body — rim to bottom of glass */}
-            <line x1={rimX} y1={rimY} x2={btmX} y2={btmY}
+            {/* Lower body — bend to bottom of glass */}
+            <line x1={bendX} y1={bendY} x2={btmX} y2={btmY}
               stroke="url(#straw-stripes)" strokeWidth={sw} strokeLinecap="round" />
-            {/* Corrugated bend section — short ridged segment at the rim */}
-            <line x1={bendTopX} y1={bendTopY} x2={bendBottomX} y2={bendBottomY}
-              stroke="url(#straw-stripes)" strokeWidth={sw} strokeLinecap="butt" />
-            {/* Bend ridges — small horizontal lines to suggest corrugation */}
-            {[0, 0.25, 0.5, 0.75, 1].map((t, i) => {
-              const ry = bendTopY + (bendBottomY - bendTopY) * t;
-              const rx = bendTopX + (bendBottomX - bendTopX) * t;
-              return (
-                <line key={i}
-                  x1={rx - sw / 2 - 0.5} y1={ry}
-                  x2={rx + sw / 2 + 0.5} y2={ry}
-                  stroke="rgba(0,0,0,0.15)" strokeWidth={0.75}
-                />
-              );
-            })}
-            {/* Top section — tilts outward and slightly downward */}
-            <line x1={bendTopX} y1={bendTopY} x2={tipX} y2={tipY}
+            {/* Upper body — bend to tip */}
+            <line x1={bendX} y1={bendY} x2={tipX} y2={tipY}
               stroke="url(#straw-stripes)" strokeWidth={sw} strokeLinecap="round" />
           </g>
         );
