@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { TabBar } from "./components/TabBar";
+import { UpdatePrompt } from "./components/UpdatePrompt";
 import { TimerScreen } from "./screens/Timer/TimerScreen";
 import { HydrationScreen } from "./screens/Hydration/HydrationScreen";
 import { ProgressScreen } from "./screens/Progress/ProgressScreen";
@@ -36,6 +37,7 @@ export default function App() {
 
   return (
     <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <UpdatePrompt />
       <div className="flex flex-col h-[100dvh] bg-navy-900 text-white overflow-hidden">
         <main className="flex-1 flex flex-col overflow-hidden">
           <Routes>

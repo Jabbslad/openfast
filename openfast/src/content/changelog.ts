@@ -6,6 +6,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "0.1.3",
+    date: "2026-04-05",
+    changes: [
+      "PWA now checks for updates every 60 seconds and shows an in-app refresh prompt when a new version is available — much faster updates on iOS",
+    ],
+  },
+  {
     version: "0.1.2",
     date: "2026-04-05",
     changes: [
