@@ -39,6 +39,7 @@ export async function clearAllData(): Promise<void> {
     await db.userProfile.clear(); await db.fastingSessions.clear(); await db.mealLogs.clear();
     await db.hydrationEntries.clear(); await db.streaks.clear(); await db.badges.clear();
   });
+  localStorage.removeItem("openfast-install-dismissed");
 }
 
 function parseDates(obj: Record<string, unknown>): Record<string, unknown> {

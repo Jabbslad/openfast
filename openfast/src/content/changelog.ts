@@ -10,6 +10,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     date: "2026-04-05",
     changes: [
       "Install prompt now triggers native app install dialog on Android and desktop Chrome/Edge — one tap to install",
+      "Clear All Data now resets the install prompt so it reappears after clearing",
     ],
   },
   {
