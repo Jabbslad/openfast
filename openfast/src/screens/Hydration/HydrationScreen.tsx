@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { db } from "../../db/database";
 import type { HydrationEntry, UserProfile } from "../../types";
 import { getStartOfDay, getEndOfDay, formatTime } from "../../utils/time";
@@ -8,6 +8,8 @@ import { WaterTumbler } from "../../components/WaterTumbler";
 
 export function HydrationScreen() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [screenVisible, setScreenVisible] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [entries, setEntries] = useState<HydrationEntry[]>([]);
 
   const totalMl = entries.reduce((sum, e) => sum + e.amountMl, 0);
@@ -27,6 +29,19 @@ export function HydrationScreen() {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // Detect when this screen scrolls into view (for entrance animation)
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setScreenVisible(entry.isIntersecting),
+      { threshold: 0.5 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const addWater = async (amountMl: number) => {
     const now = new Date();
@@ -48,10 +63,10 @@ export function HydrationScreen() {
   const goalReached = totalMl >= goal;
 
   return (
-    <div className="flex-1 bg-transparent px-4 py-6 overflow-y-auto">
+    <div ref={containerRef} className="flex-1 bg-transparent px-4 py-6 overflow-y-auto">
       {/* Water tumbler */}
       <div className="mb-4">
-        <WaterTumbler fillPercent={percentage} size={160} />
+        <WaterTumbler fillPercent={percentage} size={160} visible={screenVisible} />
       </div>
 
       {/* Goal display */}

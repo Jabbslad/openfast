@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from "react";
 
 interface WaterTumblerProps {
   fillPercent: number; // 0-100
+  visible?: boolean;   // true when the Water screen is in view
   size?: number;
 }
 
-export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
+export function WaterTumbler({ fillPercent, visible = true, size = 180 }: WaterTumblerProps) {
   const clampedFill = Math.max(0, Math.min(100, fillPercent));
 
   // Tumbler dimensions (in viewBox coordinates)
@@ -25,41 +26,33 @@ export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
   const [wavePhase, setWavePhase] = useState(0);
   const animRef = useRef<number>(0);
   const prevFillRef = useRef(0);
-  const svgRef = useRef<SVGSVGElement>(null);
-  const isVisible = useRef(false);
-  const hasEntrance = useRef(false);
+  const wasVisible = useRef(false);
 
-  // Entrance animation: rise from 0 to current when scrolling into view
+  // Entrance animation when becoming visible
   useEffect(() => {
-    const el = svgRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !isVisible.current) {
-          isVisible.current = true;
-          if (clampedFill > 0) {
-            animateRise(0, clampedFill, 1500, 10);
-          }
-          hasEntrance.current = true;
-        } else if (!entry.isIntersecting) {
-          isVisible.current = false;
-          hasEntrance.current = false;
-          cancelAnimationFrame(animRef.current);
-          setDisplayFill(0);
-          setWaveAmplitude(0);
-        }
-      },
-      { threshold: 0.3 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
+    if (visible && !wasVisible.current) {
+      // Just became visible — animate from 0 to current
+      wasVisible.current = true;
+      prevFillRef.current = clampedFill;
+      if (clampedFill > 0) {
+        animateRise(0, clampedFill, 1500, 10);
+      } else {
+        setDisplayFill(0);
+      }
+    } else if (!visible && wasVisible.current) {
+      // Left the screen — reset
+      wasVisible.current = false;
+      cancelAnimationFrame(animRef.current);
+      setDisplayFill(0);
+      setWaveAmplitude(0);
+      prevFillRef.current = 0;
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [visible]);
 
-  // Splash animation: when fillPercent increases (water added)
+  // Splash animation: when fillPercent changes while visible
   useEffect(() => {
-    if (!isVisible.current || !hasEntrance.current) {
+    if (!wasVisible.current) {
       prevFillRef.current = clampedFill;
       return;
     }
@@ -69,10 +62,8 @@ export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
     prevFillRef.current = clampedFill;
 
     if (diff > 0) {
-      // Water added — rise with splash
       animateRise(prev, clampedFill, 2000, 6);
     } else if (diff < 0) {
-      // Water removed — drop with slosh
       animateRise(prev, clampedFill, 1500, 5);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -81,21 +72,17 @@ export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
   function animateRise(from: number, to: number, duration: number, splashIntensity = 8) {
     cancelAnimationFrame(animRef.current);
     const start = performance.now();
-    // Total animation time includes the slosh settling after the rise
     const totalDuration = duration + 1500;
 
     function tick(now: number) {
       const elapsed = now - start;
       const riseT = Math.min(elapsed / duration, 1);
 
-      // Ease-out cubic for the rise
       const eased = 1 - Math.pow(1 - riseT, 3);
       setDisplayFill(from + (to - from) * eased);
 
-      // Damped sine wave for the slosh — starts when rise begins,
-      // continues after rise completes to let the water settle
       const waveT = elapsed / 1000;
-      const damping = Math.exp(-waveT * 1.8); // slower damping = longer visible slosh
+      const damping = Math.exp(-waveT * 1.8);
       const wave = damping * splashIntensity * Math.sin(waveT * 12);
       setWaveAmplitude(wave);
       setWavePhase(waveT * 6);
@@ -134,7 +121,6 @@ export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
     Z
   `;
 
-  // Water body path with animated wave as top edge
   const amp = waveAmplitude;
   const ph = wavePhase;
   const wW = waterTopWidth;
@@ -154,7 +140,6 @@ export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
 
   return (
     <svg
-      ref={svgRef}
       width={size}
       height={size * (viewH / viewW)}
       viewBox={`0 0 ${viewW} ${viewH}`}
@@ -182,14 +167,11 @@ export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
         </clipPath>
       </defs>
 
-      {/* Glass body fill (translucent) */}
       <path d={glassPath} fill="url(#glass-shine)" stroke="none" />
 
-      {/* Water fill (clipped inside glass) */}
       {displayFill > 0 && (
         <g clipPath="url(#glass-clip)">
           <path d={waterPath} fill="url(#water-fill)" />
-          {/* Wave surface highlight */}
           <path
             d={`
               M ${cx - wW / 2} ${waterTop}
@@ -208,7 +190,6 @@ export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
         </g>
       )}
 
-      {/* Glass outline */}
       <path
         d={glassPath}
         stroke="rgba(255,255,255,0.25)"
@@ -218,7 +199,6 @@ export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
         fill="none"
       />
 
-      {/* Left side highlight (glass refraction) */}
       <line
         x1={cx - topWidth / 2 + 8}
         y1={bodyTop + 10}
