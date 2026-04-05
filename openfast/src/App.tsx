@@ -36,7 +36,7 @@ export default function App() {
   }
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <div className="flex flex-col h-[100dvh] bg-navy-900 text-white overflow-hidden">
         <main className="flex-1 flex flex-col overflow-hidden">
           <Routes>
