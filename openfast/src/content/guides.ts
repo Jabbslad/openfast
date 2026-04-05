@@ -60,6 +60,14 @@ export const GUIDES: Guide[] = [
     body: "Common signs of dehydration include dark-colored urine, persistent headaches, fatigue, and difficulty concentrating. During fasting, these symptoms can be amplified because food provides roughly 20% of daily fluid intake. If you experience dizziness or muscle cramps, increase your water intake immediately. Pale yellow urine is the best indicator that you are adequately hydrated.",
   },
 
+  // Body & Individual Factors
+  {
+    id: "weight-gender-fasting",
+    category: "Body & Individual Factors",
+    title: "Does Weight or Gender Affect Fasting Stages?",
+    body: "Yes — body weight, composition, and gender can all shift when you enter each fasting zone by a few hours. Larger individuals and those with more muscle mass store more glycogen, which can delay the transition into fat burning. Leaner people often produce ketones sooner because their glycogen depletes faster. Women typically carry less glycogen than men and may enter fat-burning phases slightly earlier, but hormonal fluctuations — especially estrogen and progesterone across the menstrual cycle — can slow or speed ketone production. Extended fasts beyond 24 hours may also affect reproductive hormones more in women. The zone timings shown in this app are population averages; your personal transitions depend on fitness level, diet, metabolic health, and body composition. For precise tracking, blood ketone or glucose monitoring is the gold standard.",
+  },
+
   // Common Questions
   {
     id: "coffee-break-fast",
