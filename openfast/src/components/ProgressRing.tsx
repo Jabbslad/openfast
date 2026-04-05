@@ -211,54 +211,68 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor: _zone
             );
           })}
 
-          {/* Progress arc — one segment per zone, each in its zone colour */}
+          {/* Progress arc — single sweep with zone colours via masked colour wheel */}
           {progress > 0 && (() => {
             const headAngle = progress * 2 * Math.PI - Math.PI / 2;
             const headX = center + Math.cos(headAngle) * radius;
             const headY = center + Math.sin(headAngle) * radius;
             const totalArcLen = circumference * progress;
 
-            // Build per-zone arc segments that together form the progress arc
-            const segments: { start: number; len: number; color: string }[] = [];
-
+            // Build coloured wedge sectors covering the full ring
+            // Each zone gets a filled annular wedge
+            const wedges: { startAngle: number; endAngle: number; color: string }[] = [];
             for (const zone of zones) {
-              const zoneStartFrac = (zone.startHour * 3_600_000) / ringScaleMs;
-              const zoneEndFrac = Math.min(
+              const startFrac = (zone.startHour * 3_600_000) / ringScaleMs;
+              const endFrac = Math.min(
                 (zone.endHour ? zone.endHour * 3_600_000 : ringScaleMs) / ringScaleMs,
                 1
               );
-
-              // Clip to the progress range [0, progress]
-              const segStart = Math.max(zoneStartFrac, 0);
-              const segEnd = Math.min(zoneEndFrac, progress);
-              if (segEnd <= segStart) continue;
-
-              const segLen = (segEnd - segStart) * circumference;
-              segments.push({ start: segStart, len: segLen, color: zone.color });
+              if (startFrac >= 1) continue;
+              const sa = startFrac * 2 * Math.PI - Math.PI / 2;
+              const ea = endFrac * 2 * Math.PI - Math.PI / 2;
+              wedges.push({ startAngle: sa, endAngle: ea, color: zone.color });
             }
+
+            const outerR = radius + strokeWidth / 2;
+            const innerR = radius - strokeWidth / 2;
+
+            function wedgePath(sa: number, ea: number): string {
+              const x1o = center + Math.cos(sa) * outerR;
+              const y1o = center + Math.sin(sa) * outerR;
+              const x2o = center + Math.cos(ea) * outerR;
+              const y2o = center + Math.sin(ea) * outerR;
+              const x2i = center + Math.cos(ea) * innerR;
+              const y2i = center + Math.sin(ea) * innerR;
+              const x1i = center + Math.cos(sa) * innerR;
+              const y1i = center + Math.sin(sa) * innerR;
+              const sweep = ea - sa;
+              const large = sweep > Math.PI ? 1 : 0;
+              return `M ${x1o} ${y1o} A ${outerR} ${outerR} 0 ${large} 1 ${x2o} ${y2o} L ${x2i} ${y2i} A ${innerR} ${innerR} 0 ${large} 0 ${x1i} ${y1i} Z`;
+            }
+
+            const maskId = "progress-mask";
 
             return (
               <>
-                {/* Zone-coloured arc segments */}
-                {segments.map((seg, i) => {
-                  const isFirst = i === 0;
-                  const isLast = i === segments.length - 1;
-                  const dashOffset = -(seg.start * circumference);
-                  return (
+                <defs>
+                  {/* Mask shaped like the single progress arc with rounded ends */}
+                  <mask id={maskId}>
                     <circle
-                      key={i}
                       cx={center} cy={center} r={radius} fill="none"
-                      stroke={seg.color}
-                      strokeWidth={strokeWidth}
-                      strokeDasharray={`${seg.len} ${circumference}`}
-                      strokeDashoffset={dashOffset}
-                      strokeLinecap={isFirst || isLast ? "round" : "butt"}
+                      stroke="white" strokeWidth={strokeWidth}
+                      strokeDasharray={`${totalArcLen} ${circumference}`}
+                      strokeDashoffset={0}
+                      strokeLinecap="round"
                       transform={`rotate(-90 ${center} ${center})`}
-                      opacity={0.55}
-                      style={{ filter: `drop-shadow(0 0 6px ${glowColor})` }}
                     />
-                  );
-                })}
+                  </mask>
+                </defs>
+                {/* Coloured wedges masked by the progress arc shape */}
+                <g mask={`url(#${maskId})`} opacity={0.55} style={{ filter: `drop-shadow(0 0 6px ${glowColor})` }}>
+                  {wedges.map((w, i) => (
+                    <path key={i} d={wedgePath(w.startAngle, w.endAngle)} fill={w.color} />
+                  ))}
+                </g>
                 {/* Lighter inner edge for glass refraction */}
                 <circle
                   cx={center} cy={center} r={radius} fill="none"
