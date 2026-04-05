@@ -21,15 +21,17 @@ body {
   color: #fff;
   overflow: hidden;
   overscroll-behavior: none;
-  /* No position:fixed — on iOS standalone PWA, fixed inset:0 resolves to
-     safe-area boundaries, leaving a gap behind the home indicator (WebKit #237961).
-     html/body without fixed positioning naturally fill the full viewport
-     including behind safe areas when viewport-fit=cover is set. */
 }
 
 #root {
-  width: 100%;
-  height: 100dvh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* iOS standalone PWA: fixed bottom:0 clips to the safe-area boundary,
+     not the physical screen edge (WebKit #237961). Offset by the inset
+     so the tab bar background extends behind the home indicator. */
+  bottom: calc(-1 * env(safe-area-inset-bottom, 0px));
   display: flex;
   flex-direction: column;
   overflow: hidden;
