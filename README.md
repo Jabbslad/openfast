@@ -1,83 +1,100 @@
-# OnlyFasts
+<p align="center">
+  <img src="public/icons/icon-192.png" width="80" alt="OnlyFasts icon" />
+</p>
 
-**The fasting tracker that respects your privacy and your time.**
+<h1 align="center">OnlyFasts</h1>
 
-No accounts. No servers. No subscriptions. Just you and your fast.
+<p align="center">
+  <strong>The fasting tracker that respects your privacy.</strong><br>
+  No accounts. No servers. No subscriptions. Just you and your fast.
+</p>
 
-OnlyFasts is a free, open-source intermittent fasting tracker that runs entirely in your browser as an installable PWA. Every byte of your data stays on your device.
+<p align="center">
+  <a href="https://onlyfasts.app">onlyfasts.app</a>
+</p>
 
-## Why OnlyFasts?
+---
 
-### Your data is yours. Period.
+## What is OnlyFasts?
 
-Most fasting apps want your email, your health data, and a monthly subscription. OnlyFasts stores everything in your browser's local database. Nothing is ever sent anywhere. No analytics, no tracking, no cloud sync. Delete the app and it's gone.
+OnlyFasts is a free, open-source intermittent fasting tracker that runs as an installable PWA. Every byte of your data stays on your device — nothing is ever sent anywhere.
 
-### It works offline
+Pick a protocol, start your fast, and watch your body progress through metabolic zones in real time.
 
-Install it to your home screen and it works without an internet connection. Start a fast on the train, check your progress on a plane, log water in the middle of nowhere. The service worker caches everything locally.
+## See It In Action
 
-### 7 fasting protocols built in
+**[Try OnlyFasts live](https://onlyfasts.app)** — install it to your home screen for the full experience.
 
-Pick your protocol before every fast with a visual grid:
+Three screens, swipe to navigate:
 
-| Protocol | Fasting | Eating | Level |
-|----------|---------|--------|-------|
-| 12:12 | 12h | 12h | Beginner |
-| 14:10 | 14h | 10h | Beginner |
-| 16:8 | 16h | 8h | Popular |
-| 18:6 | 18h | 6h | Intermediate |
-| 20:4 | 20h | 4h | Advanced |
-| OMAD | 23h | 1h | Advanced |
-| 5:2 | 2 days/week | 5 days/week | Weekly |
+- **Timer** — Progress ring with coloured zone segments and curved labels, slide-to-end gesture, protocol picker
+- **Water** — Animated glass tumbler that fills as you log hydration, with a straw that drops in at your goal
+- **Progress** — Streaks, 9 achievement badges, weekly calendar, fasting history with body impact summaries
 
-### Know what's happening inside your body
+## Features
 
-OnlyFasts tracks 5 metabolic fasting zones as your fast progresses:
+### :fire: 5 Metabolic Fasting Zones
 
-- **Anabolic** (0-4h) — Digesting your last meal
-- **Catabolic** (4-16h) — Burning stored glycogen
-- **Fat Burning** (16-24h) — Fat becomes the primary fuel
-- **Ketosis** (24-72h) — Ketone production ramps up
-- **Deep Ketosis** (72h+) — Cellular repair and autophagy
+Track what's happening inside your body as your fast progresses:
+
+| Zone | Hours | What's Happening |
+|------|-------|-----------------|
+| Anabolic | 0-4h | Digesting your last meal |
+| Catabolic | 4-16h | Burning stored glycogen |
+| Fat Burning | 16-24h | Fat becomes primary fuel |
+| Ketosis | 24-72h | Ketone production ramps up |
+| Deep Ketosis | 72h+ | Cellular repair and autophagy |
 
 The progress ring shows coloured segments for each zone with curved text labels. Tap any zone to explore detailed information about what's happening in your body, the benefits, and practical tips.
 
-### Notifications keep you motivated
+### :zap: 7 Fasting Protocols
 
-Get a push notification each time you enter a new fasting zone, with a motivational message and per-zone emoji. Works even when the app is in the background on supported devices.
+Choose your protocol before every fast with a visual grid — from beginner-friendly 12:12 to advanced OMAD and weekly 5:2.
 
-### Hydration tracking with a visual twist
+### :lock: 100% Private
 
-A translucent water tumbler fills up as you log water throughout the day. Hit your daily goal and a striped drinking straw drops into the glass with a bounce animation. The water sloshes when you add or remove servings.
+- All data stored locally in IndexedDB
+- Zero network requests after the initial load
+- No accounts, no analytics, no tracking
+- Works completely offline as a PWA
+- Export your data as JSON anytime
 
-### Designed to prevent mistakes
+### :droplet: Hydration Tracking
 
-Ending a fast is the most consequential action in the app. OnlyFasts uses a **slide-to-end gesture** instead of a tap button — you have to deliberately drag a thumb across a track to complete your fast. No more accidental endings from a misplaced tap.
+A translucent water tumbler fills up as you log water. The water sloshes when you add or remove servings. Hit your daily goal and a red-and-white striped straw drops into the glass.
 
-### Swipe between screens
+### :shield: Slide-to-End Safety
 
-No bottom tab bar fighting with iOS safe areas. Swipe left and right between Water, Timer, and Progress screens. Dot indicators at the top show where you are. Settings is a gear icon tap away.
+No more accidental fast endings. OnlyFasts uses a slide-to-end gesture — you have to deliberately drag a thumb across a track to complete your fast.
 
-### Streaks, badges, and history
+### :bell: Zone Transition Notifications
 
-Track your fasting and hydration streaks. Earn 9 badges for milestones like your first fast, a 7-day streak, or a 20-hour extended fast. Tap any completed fast in your history to see a rich summary of your journey through the metabolic zones and the benefits achieved.
+Get a push notification with a motivational message each time you enter a new fasting zone. Works in the background on supported devices.
 
-### Animated everything
+### :sparkles: Animated Everything
 
 - Progress ring sweeps from zero to your current position each time you visit the Timer
 - Zone timeline fills left to right through each stage
 - Water tumbler rises with a sloshing wave animation
 - Straw drops in with a bounce when you hit your water goal
 
+### :chart_with_upwards_trend: Streaks, Badges & History
+
+Track your fasting and hydration streaks. Earn 9 badges for milestones. Tap any completed fast in your history to see a rich summary of your metabolic journey.
+
+### :iphone: Swipe Navigation
+
+No bottom tab bar. Swipe between Water, Timer, and Progress screens. Dot indicators at the top show where you are. Settings is a gear icon tap away.
+
 ## Install
 
 ### As a PWA (recommended)
 
-Visit [onlyfasts.app](https://onlyfasts.app) on your phone or desktop browser and install it:
+Visit **[onlyfasts.app](https://onlyfasts.app)** on your phone or desktop browser:
 
-- **iOS**: Share button > Add to Home Screen
-- **Android**: Three-dot menu > Install app
-- **Desktop**: Click the install icon in the address bar
+- **iOS** — Share > Add to Home Screen
+- **Android** — Menu > Install app
+- **Desktop** — Click the install icon in the address bar
 
 ### From source
 
@@ -88,11 +105,18 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+Open [localhost:5173](http://localhost:5173) in your browser.
 
 ## Tech Stack
 
-React 18 + TypeScript + Vite + Tailwind CSS + Dexie (IndexedDB) + vite-plugin-pwa
+| | |
+|---|---|
+| **Framework** | React 18 + TypeScript |
+| **Build** | Vite |
+| **Styling** | Tailwind CSS |
+| **Database** | Dexie.js (IndexedDB) |
+| **PWA** | vite-plugin-pwa + Workbox |
+| **Testing** | Vitest + React Testing Library |
 
 ## Contributing
 
