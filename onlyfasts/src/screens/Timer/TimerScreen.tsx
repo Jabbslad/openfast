@@ -212,12 +212,12 @@ export function TimerScreen() {
           </div>
           <button
             onClick={() => setEditStartOpen(true)}
-            className="mt-3 mb-2 inline-flex items-center gap-1.5 px-3 py-2 rounded-full min-h-[44px] text-gray-600 text-xs hover:text-gray-400 transition-colors border-b border-dashed border-gray-700/50"
+            className="mt-3 mb-2 inline-flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-gray-600 text-xs hover:text-gray-400 transition-colors"
           >
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M17 3a2.83 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5z" />
             </svg>
-            Started at {formatTime(activeFast!.startTime)}
+            <span className="border-b border-dashed border-gray-700/50">Started at {formatTime(activeFast!.startTime)}</span>
           </button>
         </>
       ) : (
