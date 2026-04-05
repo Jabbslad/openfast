@@ -13,7 +13,7 @@ const versionMatch = changelogSrc.match(/version:\s*"([^"]+)"/);
 const version = versionMatch ? versionMatch[1] : "0.0.0";
 
 export default defineConfig({
-  base: process.env.GITHUB_PAGES ? "/openfast/" : "/",
+  base: "/",
   define: {
     __APP_VERSION__: JSON.stringify(`${version}-${commitHash}`),
   },

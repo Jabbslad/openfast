@@ -26,11 +26,11 @@ npx vitest run src/utils/zones.test.ts
 npx vitest run --grep "ProgressRing"
 ```
 
-Deployment happens automatically via GitHub Actions on push to `master`. The site is at `https://jabbslad.github.io/openfast/`.
+Deployment happens automatically via GitHub Actions on push to `master`. The site is at `https://onlyfasts.app/`.
 
 ## Architecture
 
-**Routing**: React Router v6 with `BrowserRouter`. The `basename` is set from `import.meta.env.BASE_URL` to support both local dev (`/`) and GitHub Pages (`/openfast/`).
+**Routing**: React Router v6 with `BrowserRouter`. The `basename` is set from `import.meta.env.BASE_URL` (always `/` now with custom domain).
 
 **Database**: Dexie.js wrapping IndexedDB with 6 tables: `fastingSessions`, `mealLogs`, `hydrationEntries`, `streaks`, `badges`, `userProfile`. Schema is in `src/db/database.ts`. Hooks in `src/hooks/` contain all DB mutation logic — screens don't call Dexie directly for writes.
 
@@ -62,7 +62,7 @@ See [AGENTS.md](AGENTS.md) for commit requirements. Every commit must update the
 
 ## GitHub Pages Specifics
 
-- `vite.config.ts` sets `base: "/openfast/"` when `GITHUB_PAGES` env var is set.
-- `public/404.html` handles SPA client-side routing (redirects unknown paths to base).
+- Custom domain `onlyfasts.app` is configured via `public/CNAME`. Base path is always `/`.
+- `public/404.html` handles SPA client-side routing (redirects unknown paths to `/`).
 - PWA icons must be in `public/icons/`.
 - "Check for Updates" in Settings unregisters service workers and clears caches.

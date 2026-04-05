@@ -6,6 +6,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "0.4.9",
+    date: "2026-04-05",
+    changes: [
+      "App now served from custom domain onlyfasts.app instead of jabbslad.github.io/openfast",
+    ],
+  },
+  {
     version: "0.4.8",
     date: "2026-04-05",
     changes: [
