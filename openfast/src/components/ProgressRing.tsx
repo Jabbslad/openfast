@@ -51,11 +51,11 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor, zoneG
   const zones = getAllZones();
 
   // Animate progress arc from 0 to current each time the ring scrolls into view
-  const [animatedProgress, setAnimatedProgress] = useState(0);
+  const [displayProgress, setDisplayProgress] = useState(0);
   const animationRef = useRef<number>(0);
   const ringRef = useRef<HTMLDivElement>(null);
+  const isAnimating = useRef(false);
   const isVisible = useRef(false);
-  const lastTargetRef = useRef(0);
 
   // Detect visibility via IntersectionObserver
   useEffect(() => {
@@ -66,57 +66,55 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor, zoneG
       ([entry]) => {
         if (entry.isIntersecting && !isVisible.current) {
           isVisible.current = true;
-          // Trigger entrance animation
-          triggerAnimation();
+          // Start entrance animation from 0 to current
+          cancelAnimationFrame(animationRef.current);
+          isAnimating.current = true;
+          const animTarget = targetProgress;
+          const duration = 1500;
+          const start = performance.now();
+
+          function tick(now: number) {
+            const t = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - t, 3);
+            setDisplayProgress(eased * animTarget);
+            if (t < 1) {
+              animationRef.current = requestAnimationFrame(tick);
+            } else {
+              isAnimating.current = false;
+            }
+          }
+
+          setDisplayProgress(0);
+          // Small delay so the 0-state renders before animation starts
+          setTimeout(() => {
+            animationRef.current = requestAnimationFrame(tick);
+          }, 50);
         } else if (!entry.isIntersecting) {
           isVisible.current = false;
-          setAnimatedProgress(0);
+          cancelAnimationFrame(animationRef.current);
+          isAnimating.current = false;
+          setDisplayProgress(0);
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.3 }
     );
     observer.observe(el);
     return () => observer.disconnect();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function triggerAnimation() {
-    cancelAnimationFrame(animationRef.current);
-    const target = lastTargetRef.current;
-    if (target === 0) return;
-
-    const duration = 1500;
-    const start = performance.now();
-
-    function tick(now: number) {
-      const elapsed = now - start;
-      const t = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
-      setAnimatedProgress(eased * lastTargetRef.current);
-
-      if (t < 1) {
-        animationRef.current = requestAnimationFrame(tick);
-      }
-    }
-
-    setAnimatedProgress(0);
-    animationRef.current = requestAnimationFrame(tick);
-  }
-
-  // Keep ref updated with latest target progress
+  // When not animating, follow real-time progress
   useEffect(() => {
-    lastTargetRef.current = targetProgress;
-    // If already visible (normal ticking), update directly
-    if (isVisible.current && animatedProgress > 0) {
-      setAnimatedProgress(targetProgress);
+    if (!isAnimating.current && isVisible.current) {
+      setDisplayProgress(targetProgress);
     }
-  }, [targetProgress, animatedProgress]);
+  }, [targetProgress]);
 
   useEffect(() => {
     return () => cancelAnimationFrame(animationRef.current);
   }, []);
 
-  const progress = animatedProgress;
+  const progress = displayProgress;
 
   const padding = 12;
   const fullSize = size + padding * 2;
