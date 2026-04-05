@@ -6,6 +6,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "0.4.7",
+    date: "2026-04-05",
+    changes: [
+      "PWA icon now fills edge-to-edge so the app colour extends to the border on iOS and Android home screens",
+    ],
+  },
+  {
     version: "0.4.6",
     date: "2026-04-05",
     changes: [
