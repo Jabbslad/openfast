@@ -47,7 +47,7 @@ const tabs = [
 
 export function TabBar() {
   return (
-    <nav className="flex justify-around border-t border-white/[0.06] bg-[#0a0a14] py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shrink-0">
+    <nav className="flex justify-around border-t border-white/[0.06] bg-[#0a0a14] py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shrink-0 z-50">
       {tabs.map((tab) => (
         <NavLink key={tab.to} to={tab.to} end={tab.to === "/"}
           className={({ isActive }) =>
