@@ -56,6 +56,8 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor, zoneG
   const ringRef = useRef<HTMLDivElement>(null);
   const isAnimating = useRef(false);
   const isVisible = useRef(false);
+  const targetProgressRef = useRef(targetProgress);
+  targetProgressRef.current = targetProgress; // always up to date
 
   // Detect visibility via IntersectionObserver
   useEffect(() => {
@@ -66,26 +68,25 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor, zoneG
       ([entry]) => {
         if (entry.isIntersecting && !isVisible.current) {
           isVisible.current = true;
-          // Start entrance animation from 0 to current
           cancelAnimationFrame(animationRef.current);
           isAnimating.current = true;
-          const animTarget = targetProgress;
           const duration = 1500;
           const start = performance.now();
 
           function tick(now: number) {
             const t = Math.min((now - start) / duration, 1);
             const eased = 1 - Math.pow(1 - t, 3);
-            setDisplayProgress(eased * animTarget);
+            // Always read the latest target so the arc lands correctly
+            setDisplayProgress(eased * targetProgressRef.current);
             if (t < 1) {
               animationRef.current = requestAnimationFrame(tick);
             } else {
               isAnimating.current = false;
+              setDisplayProgress(targetProgressRef.current);
             }
           }
 
           setDisplayProgress(0);
-          // Small delay so the 0-state renders before animation starts
           setTimeout(() => {
             animationRef.current = requestAnimationFrame(tick);
           }, 50);
